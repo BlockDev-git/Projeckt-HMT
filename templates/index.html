@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+
+        <h1>IndexDB Template</h1>
+        <input id="context"/>
+        <button id="add-button" onclick="add()"> add </button>
+        <br>
+        <br>
+        <p> search </p>
+        <input id="search" onchange="displayEntry(this.value)"/>
+        <div id="container"></div>
+        <br>
+    </main>
+    <footer>
+       <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </footer>
+  </body>
+</html>
