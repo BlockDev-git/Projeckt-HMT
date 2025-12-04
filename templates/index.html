@@ -7,19 +7,86 @@
   <body>
     <header></header>
     <main>
+      <div class="topbar">
+        <div style="display: flex;">
 
-        <h1>IndexDB Template</h1>
-        <input id="context"/>
-        <button id="add-button" onclick="add()"> add </button>
-        <br>
-        <br>
-        <p> search </p>
-        <input id="search" onchange="displayEntry(this.value)"/>
-        <div id="container"></div>
-        <br>
+          <p id="user"> User </p>
+          
+          <div class="dropdown">
+            <button class="dropbtn"><i class="material-icons">account_circle</i></button>
+            <div class="dropdown-content" id="accountoptions">
+              <a onclick="toLogin()" id="loginOption" style="display: none;">anmelden</a>
+              <a onclick="logout()" id="logoutOption" style="display: none;">abmelden</a>
+              <a onclick="toChangePW()" id="changePwOption" style="display: none;">Passwort ändern </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Popup -->
+
+      <div class="loginOverlay"> </div>
+      <div class="loginPopup">
+          <button onclick="closeToLogin()" style="margin-left: 90%;"><i class="material-icons">close</i></button>
+          <h2>Als Admin anmelden</h2>
+          <div>
+            <div style="display: flex; width: 90%;"> 
+              <p>Password</p>
+              <input style="height: 50%; margin: auto;" type="password" id="loginInput">
+            </div>
+            <div style="display: flex; width: 85%;">
+              <button style="width: 70%; margin-left: 35%;" onclick="login()"> Anmelden </button>
+              
+            </div>
+             <div>
+              <div id="infoBox" style="background-color: #a5e1cd; border-radius: 5px; text-align: center; display: none;">
+                <p id="infoText" style="padding-top: 5px; padding-bottom: 5px; display: none; color: white"> Anmeldung erfolgreich </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change PW Popup -->
+
+      <div class="changePWOverlay"> </div>
+      <div class="changePWPopup">
+          <button onclick="closeToChangePW()" style="margin-left: 90%;"><i class="material-icons">close</i></button>
+          <h2>Admin Passwort ändern</h2>
+          <div>
+            <div style="display: flex; width: 90%;"> 
+              <p>Altes Password</p>
+              <input style="height: 50%; margin: auto;" type="password" id="currentPasswort">
+            </div>
+            <div style="display: flex; width: 90%;"> 
+              <p>Neues Password</p>
+              <input style="height: 50%; margin: auto;" type="password" id="newPasswort">
+            </div>
+            <div style="display: flex; width: 90%;"> 
+              <p>Password wiederholen</p>
+              <input style="height: 50%; margin: auto;" type="password" id="repeatPasswort">
+            </div>
+            <div style="display: flex; width: 85%;">
+              <button style="width: 70%; margin-left: 44%;" > Passwort ändern </button>
+            </div>
+             <div>
+              <div id="infoBox" style="background-color: #a5e1cd; border-radius: 5px; text-align: center; display: none;">
+                <p id="infoText" style="padding-top: 5px; padding-bottom: 5px; display: none; color: white"> Anmeldung erfolgreich </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="toSearch()"> Suche </button>
+      <button onclick="toDevice()"> Geräte erstellen </button>
+      <button onclick="toType()"> Geräte Typ </button>
+
     </main>
     <footer>
-       <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </footer>
   </body>
 </html>

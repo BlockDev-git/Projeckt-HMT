@@ -1,24 +1,16 @@
 window.onload = function() {
-    displayAllEntrys()
-}
 
-function displayEntry(search){
+    var loginkey = sessionStorage.getItem("loginKey");
 
-    let container = document.getElementById('container');
-    container.textContent = '';
-
-    if (search === ""){
-
-        displayAllEntrys();
-    } else {
+    if (loginkey != null) {
 
         var param = {
-            text : (search)
+            key : (loginkey)
         }
 
         async function fetchData() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/get', {
+                const response = await fetch('http://127.0.0.1:5000/check_key', {
 
                     method: 'POST',
                     headers: {
@@ -28,9 +20,19 @@ function displayEntry(search){
                 });
 
                 const data = await response.json();
-                console.log(data[0])
+                console.log(data)
 
-                generateHtmlTags(data[0])
+                if (data == true) {
+
+                    document.getElementById("user").innerHTML = "Admin";
+                    document.getElementById("logoutOption").style.display = "block";
+                    document.getElementById("changePwOption").style.display = "block";
+
+                }else if (data == false){
+
+                    document.getElementById("user").innerHTML = "Beobachter";
+                    document.getElementById("loginOption").style.display = "block";
+                }
 
             } catch (error) {
                 console.error('Error:', error);
@@ -38,86 +40,83 @@ function displayEntry(search){
         }
 
         fetchData(param);
+    }else {
+        
+        document.getElementById("user").innerHTML = "Beobachter";
+        document.getElementById("loginOption").style.display = "block";
+
     }
 }
 
-function displayAllEntrys(){
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    let container = document.getElementById('container');
-    container.textContent = '';
-
-    async function fetchData() {
-        try {
-            const response = await fetch('http://127.0.0.1:5000/get_all', {
-
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify( null )
-            });
-
-            const data = await response.json();
-            console.log(data)
-
-            data.forEach(element => {
-                generateHtmlTags(element)
-            });
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-    fetchData();
+function toSearch(){
+    window.location.href = "http://127.0.0.1:5000/search";
 }
 
-function generateHtmlTags(item) {
-
-    let div = document.createElement('div');
-    let deleteButton = document.createElement('button');
-    let editButton = document.createElement('button');
-    let input = document.createElement('input');
-
-    div.style = "display: flex;";
-
-    deleteButton.id = "delete-button-"+item[0];
-    deleteButton.innerHTML = "delete";
-    deleteButton.onclick = remove.bind(null, item[0]);
-
-    editButton.id = "edit-button-"+item[0];
-    editButton.innerHTML = "edit";
-    editButton.onclick = edit.bind(null, item[0]);
-
-    input.id = "input-"+item[0];
-    input.value = item[1];
-    input.readOnly = true;
-    input.addEventListener('change', save.bind(null, item[0]))
-
-    div.appendChild(deleteButton);
-    div.appendChild(editButton);
-    div.appendChild(input);
-
-    container.appendChild(div);
+function toDevice(){
+    window.location.href = "http://127.0.0.1:5000/device"
 }
 
-function edit(id){
+function toType(){
+    window.location.href = "http://127.0.0.1:5000/type"
+}
 
-    let input = document.getElementById('input-'+id);
-    input.readOnly = false;
-};
+function toHome(){
+    window.location.href = "http://127.0.0.1:5000/"
+}
 
-function save(id){
+// ---------- Login Popup ----------
 
-    var input = document.getElementById("input-"+id);
+function toLogin() {
+
+    document.querySelector(".loginPopup").style.display = "block";
+    document.querySelector(".loginOverlay").style.display = "block";
+
+    document.getElementById("infoBox").style.display = "none";
+    document.getElementById("infoText").style.display = "none";
+
+    document.getElementById("loginInput").value = "";
+}
+
+function closeToLogin() {
+
+    document.querySelector(".loginPopup").style.display = "none";
+    document.querySelector(".loginOverlay").style.display = "none";
+}
+
+// ---------- Change Password Popup ----------
+
+function toChangePW() {
+
+    document.querySelector(".changePWPopup").style.display = "block";
+    document.querySelector(".changePWOverlay").style.display = "block";
+
+    document.getElementById("infoBox").style.display = "none";
+    document.getElementById("infoText").style.display = "none";
+
+    document.getElementById("loginInput").value = "";
+}
+
+function closeToChangePW() {
+
+    document.querySelector(".changePWPopup").style.display = "none";
+    document.querySelector(".changePWOverlay").style.display = "none";
+}
+
+// ---------- Function Login ----------
+
+function login(){
+
+    let loginInput = document.getElementById('loginInput');
 
     var param = {
-        id : (id),
-        text: (input.value)
+        password : (loginInput.value)
     }
 
     async function fetchData() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/update', {
+            const response = await fetch('http://127.0.0.1:5000/check_password', {
 
                 method: 'POST',
                 headers: {
@@ -126,92 +125,36 @@ function save(id){
                 body: JSON.stringify({param})
             });
 
-            displayAllEntrys();
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    fetchData(param);
-};
-
-function remove(id){
-
-    var param = {
-        id : (id)
-    }
-
-    async function fetchData() {
-        try {
-            const response = await fetch('http://127.0.0.1:5000/remove', {
-
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({param})
-            });
-
-            displayAllEntrys();
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    fetchData(param);
-};
-
-function add(){
-
-    var context = document.getElementById("context");
-
-    var param = {
-        text : (context.value)
-    }
-
-    async function fetchData(param) {
-
-        try {
-            const response = await fetch('http://127.0.0.1:5000/get', {
-
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ param })
-            });
-
             const data = await response.json();
-            console.log(data)
+            console.log(data[0])
 
-            if (context.value != "") {
+            if (data[0] == true) {
 
-                var param = {
-                    text : context.value,
-                }
+                document.getElementById("infoBox").style.backgroundColor = "#a5e1cd"
+                document.getElementById("infoText").innerHTML = "Anmeldung erfolgreich"
 
-                fetch('http://127.0.0.1:5000/add', {
+                document.getElementById("infoBox").style.display = "block"
+                document.getElementById("infoText").style.display = "block"
 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ param })
-                })
+                sessionStorage.setItem("loginKey", data[1]);
+                await delay(1000);
+                toHome();
 
-                .then(response => response.json())
-                .then(data => console.log(data.result))
-                .catch(error => console.error('Error:', error));
+            } else if (data[0] == false) {
 
-                 displayAllEntrys();
+                document.getElementById("infoBox").style.backgroundColor = "#ff7d7d"
+                document.getElementById("infoText").innerHTML = "Password inkorrekt"
 
-            } else {
+                document.getElementById("infoBox").style.display = "block"
+                document.getElementById("infoText").style.display = "block"
 
-                if (context.value == "") {
-                    window.alert("context nicht gültig!")
-                }
+            }else {
+
+                document.getElementById("infoBox").style.backgroundColor = "#ffd579"
+                document.getElementById("infoText").innerHTML = "Anmeldung fehlgeschlagen"
+
+                document.getElementById("infoBox").style.display = "block"
+                document.getElementById("infoText").style.display = "block"
             }
 
         } catch (error) {
@@ -220,4 +163,145 @@ function add(){
     }
 
     fetchData(param);
-};
+}
+
+// ---------- Function Change Password ----------
+
+function changePw(){
+
+    let currentPasswort = document.getElementById('currentPasswort');
+
+    var param = {
+        password : (currentPasswort.value)
+    }
+
+    async function fetchData() {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/check_password', {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({param})
+            });
+
+            const data = await response.json();
+            console.log(data[0])
+
+            if (data[0] == true) {
+
+                let newPasswort = document.getElementById('newPasswort');
+                let repeatPasswort = document.getElementById('repeatPasswort');
+
+                if (newPasswort == repeatPasswort){
+                    
+                    var param = {
+                        password : (loginInput.value)
+                    }
+
+                    async function fetchData() {
+                        try {
+                            const response = await fetch('http://127.0.0.1:5000/check_password', {
+
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({param})
+                            });
+
+                            const data = await response.json();
+                            console.log(data[0])
+
+                            if (data[0] == true) {
+
+                                document.getElementById("infoBox").style.backgroundColor = "#a5e1cd"
+                                document.getElementById("infoText").innerHTML = "Anmeldung erfolgreich"
+
+                                document.getElementById("infoBox").style.display = "block"
+                                document.getElementById("infoText").style.display = "block"
+
+                                sessionStorage.setItem("loginKey", data[1]);
+                                await delay(1000);
+                                toHome();
+
+                            } else if (data[0] == false) {
+
+                                document.getElementById("infoBox").style.backgroundColor = "#ff7d7d"
+                                document.getElementById("infoText").innerHTML = "Password inkorrekt"
+
+                                document.getElementById("infoBox").style.display = "block"
+                                document.getElementById("infoText").style.display = "block"
+
+                            }else {
+
+                                document.getElementById("infoBox").style.backgroundColor = "#ffd579"
+                                document.getElementById("infoText").innerHTML = "Anmeldung fehlgeschlagen"
+
+                                document.getElementById("infoBox").style.display = "block"
+                                document.getElementById("infoText").style.display = "block"
+                            }
+
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    }
+
+                    fetchData(param);
+                }
+
+            } else if (data[0] == false) {
+
+                document.getElementById("infoBox").style.backgroundColor = "#ff7d7d"
+                document.getElementById("infoText").innerHTML = "Password inkorrekt"
+
+                document.getElementById("infoBox").style.display = "block"
+                document.getElementById("infoText").style.display = "block"
+
+            }else {
+
+                document.getElementById("infoBox").style.backgroundColor = "#ffd579"
+                document.getElementById("infoText").innerHTML = "fehlgeschlagen"
+
+                document.getElementById("infoBox").style.display = "block"
+                document.getElementById("infoText").style.display = "block"
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    fetchData(param);
+}
+
+// ---------- Logout ----------
+
+function logout(){
+
+    var param = {
+        key : (sessionStorage.getItem("loginKey"))
+    }
+
+    async function fetchData() {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/logout', {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({param})
+            });
+
+            sessionStorage.removeItem("loginKey") 
+            toHome();
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    fetchData(param);
+}
