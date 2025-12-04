@@ -6,6 +6,7 @@ import time
 import json
 import os
 import uuid
+import bcrypt
 
 app = Flask(__name__)
 scheduler = APScheduler()
@@ -45,6 +46,11 @@ def check_password():
     search = corsor.fetchall()
     connection.close()
 
+    password = bytes([ord(char) for char in input_password])
+    corsor.execute("select * from users where username=:u", {"u": "admin"})
+    search = corsor.fetchall()
+    print(search)
+
     if search[0][0] == input_password:
 
         connection = sqlite3.connect("Database.db")
@@ -82,6 +88,24 @@ def check_key():
     else:
         return jsonify(False)
     
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    data = request.json
+    new_password = data['newParam']['password']
+
+    password = b''+new_password+''
+    corsor.execute("select * from users where username=:u", {"u": "admin"})
+    search = corsor.fetchall()
+    #hashed = bcrypt.hashpw(password, salt)
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+    cursor.execute("UPDATE users SET password=? WHERE username=?", (new_password, "admin"))
+    connection.commit()
+    connection.close()
+
+    return jsonify(True)
+    
 @app.route('/logout', methods=['POST'])
 def logout():
     data = request.json
@@ -118,10 +142,15 @@ if __name__ == '__main__':
     corsor = connection.cursor()
 
     # User-Tabelle
-    corsor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)")
+    corsor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, salt TEXT)")
     corsor.execute("SELECT * FROM users WHERE username=?", ("admin",))
     if corsor.fetchone() is None:
-        corsor.execute("INSERT INTO users (username, password) VALUES (?, ?)", ["admin", "4admin"])
+
+        password = b'4admin' # Default Passwort soll bei benutzung geändertwerden
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password, salt)
+
+        corsor.execute("INSERT INTO users (username, password, salt) VALUES (?, ?, ?)", ["admin", hashed, salt])
     
     connection.commit()
 
