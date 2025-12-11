@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+
+      <h1> Sie haben nicht genügend Berechtigungen, um den Inhalt anzuzeigen </h1>
+      <p> Melde dich mit dem Admin Benutzer an, um mehr Berechtigungen zu erlangen </p>
+
+      <button onclick="toHome()" id="home-btn"> Home </button>
+
+    </main>
+    <footer>
+
+        <script>
+          function toHome(){
+            window.location.href = "http://127.0.0.1:5000/"
+          }
+        </script>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    </footer>
+  </body>
+</html>

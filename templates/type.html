@@ -12,20 +12,50 @@
         <button onclick="toHome()"> Home </button>
 
         <div style="display: flex; width: 15%;"> 
-          <p> test</p>
-          <input style="height: 50%; margin: auto;" type="text">
+          <p> Name </p>
+          <input style="height: 50%; margin: auto;" type="text" id="name">
         </div>
 
         <div style="display: flex; width: 15%;"> 
-          <p> test</p>
-          <input style="height: 50%; margin: auto;" type="text">
+          <p> Gerätart </p>
+          <input style="height: 50%; margin: auto;" type="text" id="device_type">
         </div>
 
-        <input type="text">
+        <div style="display: flex; width: 15%;"> 
+          <p> Garantie </p>
+          <input style="height: 50%; margin: auto;" type="text" id="warranty">
+        </div>
+
+        <div style="display: flex; width: 15%;"> 
+          <p> Hersteller </p>
+          <input style="height: 50%; margin: auto;" type="text" id="manufacturer">
+        </div>
+
+        <div style="display: flex; width: 15%;"> 
+          <p> Produkt URL </p>
+          <input style="height: 50%; margin: auto;" type="text" id="product_url">
+        </div>
+
+        <div style="display: flex; width: 15%;"> 
+          <p> Bild URL </p>
+          <input style="height: 50%; margin: auto;" type="text" id="image_url">
+          <img width="100" height="100" id="img">
+        </div>
+
+        <div style="display: flex; width: 15%;"> 
+          <p> Kommentar </p>
+          <input style="height: 50%; margin: auto;" type="text" id="comment">
+        </div>
+
+        <div id="bar"> </div>
+
+        <div id="infoBoxChangePW" style="background-color: #a5e1cd; border-radius: 5px; text-align: center">
+          <p id="infoTextChangePW" style="padding-top: 5px; padding-bottom: 5px; color: white"> Anmeldung erfolgreich </p>
+        </div>
         
     </main>
     <footer>
-       <script src="{{ url_for('static', filename='script.js') }}"></script>
+       <script src="{{ url_for('static', filename='typ.js') }}"></script>
     </footer>
   </body>
 </html>

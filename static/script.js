@@ -27,11 +27,20 @@ window.onload = function() {
                     document.getElementById("user").innerHTML = "Admin";
                     document.getElementById("logoutOption").style.display = "block";
                     document.getElementById("changePwOption").style.display = "block";
+                    document.getElementById("suche-btn").style.display = "block";
+                    document.getElementById("typ-btn").style.display = "block";
+                    document.getElementById("device-btn").style.display = "block";
+                    document.getElementById("logs-btn").style.display = "block";
 
                 }else if (data == false){
 
                     document.getElementById("user").innerHTML = "Beobachter";
                     document.getElementById("loginOption").style.display = "block";
+                    document.getElementById("suche-btn").style.display = "block";
+
+                    document.getElementById("typ-btn").style.display = "block";
+                    document.getElementById("device-btn").style.display = "block";
+                    document.getElementById("logs-btn").style.display = "block";
                 }
 
             } catch (error) {
@@ -44,6 +53,11 @@ window.onload = function() {
         
         document.getElementById("user").innerHTML = "Beobachter";
         document.getElementById("loginOption").style.display = "block";
+        document.getElementById("suche-btn").style.display = "block";
+
+        document.getElementById("typ-btn").style.display = "block";
+        document.getElementById("device-btn").style.display = "block";
+        document.getElementById("logs-btn").style.display = "block";
 
     }
 }
@@ -59,7 +73,7 @@ function toDevice(){
 }
 
 function toType(){
-    window.location.href = "http://127.0.0.1:5000/type"
+    window.location.href = "http://127.0.0.1:5000/creat_type"
 }
 
 function toHome(){

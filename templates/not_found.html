@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+
+      <h1> Das Gesuchte Gerät / der Geräte typ konte nicht gefunden werden </h1>
+      <p> Das kann an folgende gründe ligen.</p>
+      <p> 1. Das Gerät / der Geräte typ wurde gelöscht </p>
+      <p> 2. Das Gerät / der Geräte typ wurde noch nicht angelegt </p>
+
+      <button onclick="toHome()" id="home-btn"> Home </button>
+
+    </main>
+    <footer>
+
+        <script>
+          function toHome(){
+            window.location.href = "http://127.0.0.1:5000/"
+          }
+        </script>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    </footer>
+  </body>
+</html>
