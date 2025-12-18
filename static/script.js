@@ -69,7 +69,7 @@ function toSearch(){
 }
 
 function toDevice(){
-    window.location.href = "http://127.0.0.1:5000/device"
+    window.location.href = "http://127.0.0.1:5000/creat_device"
 }
 
 function toType(){

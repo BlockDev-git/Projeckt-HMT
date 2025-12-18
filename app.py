@@ -27,15 +27,6 @@ def not_found():
 def search():
     return render_template("search.html")
 
-@app.route("/device")
-def device():
-    return render_template("device.html")
-
-@app.route('/device/<deviceID>')
-def spesifcID(deviceID):
-    print(deviceID)
-    return render_template("device.html")
-
 @app.route("/creat_type")
 def creatType():
     return render_template("type.html")
@@ -43,6 +34,14 @@ def creatType():
 @app.route("/type/<typeID>")
 def type(typeID):
     return render_template("type.html")
+
+@app.route("/creat_device")
+def creatDevice():
+    return render_template("device.html")
+
+@app.route("/device/<deviceID>")
+def device(deviceID):
+    return render_template("device.html")
 
 # ---------------- USER LOGIN ----------------
 
@@ -90,7 +89,7 @@ def check_key():
     connection = sqlite3.connect("Database.db")
     corsor = connection.cursor()
 
-    corsor.execute("select * from connections where key=:k", {"k": key})
+    corsor.execute("select * from connections where key=:key", {"key": key})
     search = corsor.fetchall()
     connection.close()
 
@@ -129,7 +128,7 @@ def logout():
     connection = sqlite3.connect("Database.db")
     corsor = connection.cursor()
 
-    corsor.execute("delete from connections where key=:k", {"k": str(key)})
+    corsor.execute("delete from connections where key=:key", {"key": str(key)})
     connection.commit()
     connection.close()
 
@@ -145,10 +144,12 @@ def task():
         expirationDate = datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S.%f")
 
         if expirationDate < datetime.now():
-            corsor.execute("delete from connections where id=:i", {"i": row[0]})
+            corsor.execute("delete from connections where id=:id", {"id": row[0]})
             connection.commit() 
     
     connection.close()
+
+# ---------------- Type ----------------
 
 @app.route('/add_type', methods=['POST'])
 def add_type():
@@ -161,15 +162,27 @@ def add_type():
     product_url = data['param']['product_url']
     image_url = data['param']['image_url']
     comment = data['param']['comment']
+    time = datetime.now()
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("INSERT INTO device_typ (name, device_type, warranty, manufacturer, product_url, image_url, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, device_type, warranty, manufacturer, product_url, image_url, comment, datetime.now()))
-    connection.commit()
-    connection.close()
+    cursor.execute("SELECT name FROM device_typ WHERE name=:name",{"name": str(name)})
+    item = cursor.fetchall()
 
-    return jsonify(True)
+    print(item)
+
+    if item == []:
+        cursor.execute("INSERT INTO device_typ (name, device_type, warranty, manufacturer, product_url, image_url, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, device_type, warranty, manufacturer, product_url, image_url, comment, time))
+        connection.commit()
+        cursor.execute("SELECT id FROM device_typ WHERE created_at=:created_at",{"created_at": str(time)})
+        item = cursor.fetchall()
+        connection.close()
+
+        return jsonify(True, item)
+    
+    connection.close()
+    return jsonify(False, None)
 
 @app.route('/get_type', methods=['POST'])
 def get_type():
@@ -179,7 +192,7 @@ def get_type():
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM device_typ WHERE id=:i",{"i": str(id)})
+    cursor.execute("SELECT * FROM device_typ WHERE id=:id",{"id": str(id)})
     search = cursor.fetchall()
     connection.close()
 
@@ -192,7 +205,7 @@ def delete_type():
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
-    cursor.execute("DELETE FROM device_typ WHERE id=:i",{"i": str(id)})
+    cursor.execute("DELETE FROM device_typ WHERE id=:id",{"id": str(id)})
 
     connection.commit()
     connection.close()
@@ -216,11 +229,162 @@ def update_type():
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("UPDATE device_typ SET name=:n, device_type=:d, warranty=:w, manufacturer=:m, product_url=:p, image_url=:i, comment=:c WHERE id=:id", {"id": id, "n": name, "d": device_type, "w": warranty, "m": manufacturer, "p": product_url, "i": image_url, "c": comment})
+    cursor.execute("UPDATE device_typ SET name=:name, device_type=:device_type, warranty=:warranty, manufacturer=:manufacturer, product_url=:product_url, image_url=:image_url, comment=:comment WHERE id=:id", {"id": id, "name": name, "device_type": device_type, "warranty": warranty, "manufacturer": manufacturer, "product_url": product_url, "image_url": image_url, "comment": comment})
     connection.commit()
     connection.close()
 
     return jsonify(True)
+
+# ---------------- Device ----------------
+
+@app.route('/add_device', methods=['POST'])
+def add_device():
+
+    data = request.json
+    typ = data['param']['typ']
+    name = data['param']['name']
+    device_type = data['param']['device_type']
+    serial_number = data['param']['serial_number']
+    condition = data['param']['condition']
+    warranty = data['param']['warranty']
+    purchase = data['param']['purchase']
+    manufacturer = data['param']['manufacturer']
+    product_url = data['param']['product_url']
+    image_url = data['param']['image_url']
+    comment = data['param']['comment']
+    time = datetime.now()
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT serial_number FROM device WHERE serial_number=:serial_number",{"serial_number": str(serial_number)})
+    item = cursor.fetchall()
+
+    if item == []:
+        cursor.execute("INSERT INTO device (typ, name, device_type, serial_number, condition, warranty, purchase, manufacturer, product_url, image_url, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (typ, name, device_type, serial_number, condition, warranty, purchase, manufacturer, product_url, image_url, comment, time))
+        connection.commit()
+        cursor.execute("SELECT id FROM device WHERE created_at=:created_at",{"created_at": str(time)})
+        item = cursor.fetchall()
+        connection.close()
+
+        return jsonify(True, item)
+    
+    connection.close()
+    return jsonify(False, None)
+
+@app.route('/get_device', methods=['POST'])
+def get_device():
+    data = request.json
+    id = data['param']['id']
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM device WHERE id=:id",{"id": str(id)})
+    search = cursor.fetchall()
+    connection.close()
+
+    return jsonify(search)
+
+@app.route('/delete_device', methods=['POST'])
+def delete_device():
+    data = request.json
+    id = data['param']['id']
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM device WHERE id=:id",{"id": str(id)})
+
+    connection.commit()
+    connection.close()
+
+    return jsonify(True)
+
+@app.route('/update_device', methods=['POST'])
+def update_device():
+    data = request.json
+    id = data['param']['id']
+    typ = data['param']['typ']
+    name = data['param']['name']
+    device_type = data['param']['device_type']
+    serial_number = data['param']['serial_number']
+    condition = data['param']['condition']
+    warranty = data['param']['warranty']
+    purchase = data['param']['purchase']
+    manufacturer = data['param']['manufacturer']
+    product_url = data['param']['product_url']
+    image_url = data['param']['image_url']
+    comment = data['param']['comment']
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+
+    cursor.execute("UPDATE device SET typ=:typ, name=:name, device_type=:device_type, serial_number=:serial_number, condition=:condition, warranty=:warranty, purchase=:purchase, manufacturer=:manufacturer, product_url=:product_url, image_url=:image_url, comment=:comment WHERE id=:id", {"id": id, "typ": typ , "name": name, "device_type": device_type, "serial_number": serial_number, "condition": condition ,"warranty": warranty, "purchase": purchase, "manufacturer": manufacturer, "product_url": product_url, "image_url": image_url, "comment": comment})
+    connection.commit()
+    connection.close()
+
+    return jsonify(True)
+
+# ---------------- Search ----------------
+
+@app.route('/search_device', methods=['POST'])
+def search_device():
+
+    data = request.json
+    name = data['param']['name']
+    serial_number = data['param']['serial_number']
+    typ = data['param']['typ']
+    condition = data['param']['condition']
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM device WHERE name LIKE :name AND serial_number LIKE :serial_number AND typ LIKE :typ AND condition LIKE :condition", {"name": '%'+str(name)+'%', "typ": '%'+str(typ)+'%', "serial_number": '%'+str(serial_number)+'%', "condition": '%'+str(condition)+'%'})
+    devices = cursor.fetchall()
+    connection.commit()
+    connection.close()
+
+    print(devices)
+
+
+
+
+    # data = request.json
+    # #query = data['param']['query']
+    # field = data['param'].get('field')  # optional: "name", "serial_number", "typ", "condition", ...
+
+    # connection = sqlite3.connect("Database.db")
+    # cursor = connection.cursor()
+
+    # if field in ["name", "serial_number", "typ", "condition"]:
+    #     sql = f"SELECT * FROM device WHERE {field} LIKE :q"
+    #     cursor.execute(sql, {"q": f"%{query}%"})
+    # else:
+    #     cursor.execute("""
+    #         SELECT * FROM device
+    #         WHERE name LIKE :q
+    #             OR name LIKE :q
+    #             OR serial_number LIKE :q
+    #             OR typ LIKE :q
+    #             OR condition LIKE :q
+    #     """, {"q": f"%{query}%"})
+
+    # results = cursor.fetchall()
+    # connection.close()
+
+    # devices = [{
+    #     "id": r[0],
+    #     "name": r[1],
+    #     "device_type": r[2],
+    #     "warranty": r[3],
+    #     "manufacturer": r[4],
+    #     "product_url": r[5],
+    #     "image_url": r[6],
+    #     "comment": r[7],
+    #     "created_at": r[8]
+    # } for r in results]
+
+    return jsonify(data)
  
 if __name__ == '__main__':
 
@@ -246,6 +410,9 @@ if __name__ == '__main__':
 
     # Type-Tabelle
     corsor.execute("CREATE TABLE IF NOT EXISTS device_typ (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, device_type TEXT, warranty TEXT, manufacturer TEXT, product_url TEXT, image_url TEXT, comment TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)")
+
+    # Device-Tabelle
+    corsor.execute("CREATE TABLE IF NOT EXISTS device (id INTEGER PRIMARY KEY AUTOINCREMENT, typ TEXT, name TEXT, device_type TEXT, serial_number TEXT, condition TEXT, warranty TEXT, purchase TEXT, manufacturer TEXT, product_url TEXT, image_url TEXT, comment TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)")
 
     scheduler.init_app(app)
     scheduler.start()

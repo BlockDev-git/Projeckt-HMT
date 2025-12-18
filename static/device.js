@@ -4,9 +4,13 @@ window.onload = function() {
 
     function editAll() {
 
+        document.getElementById('typ').readOnly = false;
         document.getElementById('name').readOnly = false;
         document.getElementById('device_type').readOnly = false;
+        document.getElementById('serial_number').readOnly = false;
+        document.getElementById('condition').readOnly = false;
         document.getElementById('warranty').readOnly = false;
+        document.getElementById('purchase').readOnly = false;
         document.getElementById('manufacturer').readOnly = false;
         document.getElementById('product_url').readOnly = false;
         document.getElementById('image_url').readOnly = false;
@@ -15,9 +19,13 @@ window.onload = function() {
 
     function readAll() {
 
+        document.getElementById('typ').readOnly = true;
         document.getElementById('name').readOnly = true;
         document.getElementById('device_type').readOnly = true;
+        document.getElementById('serial_number').readOnly = true;
+        document.getElementById('condition').readOnly = true;
         document.getElementById('warranty').readOnly = true;
+        document.getElementById('purchase').readOnly = true;
         document.getElementById('manufacturer').readOnly = true;
         document.getElementById('product_url').readOnly = true;
         document.getElementById('image_url').readOnly = true;
@@ -29,21 +37,21 @@ window.onload = function() {
         let creatBtn = document.createElement('button');
 
         creatBtn.id = "creat";
-        creatBtn.innerHTML = "Typ anlegen";
-        creatBtn.onclick = creatType.bind(null);
+        creatBtn.innerHTML = "Gerät anlegen";
+        creatBtn.onclick = creatDevice.bind(null);
 
         bar.appendChild(creatBtn);
     }
 
-    function addDelete() {
+    function addQR() {
 
-        let deleteBtn = document.createElement('button');
+        let creatBtn = document.createElement('button');
 
-        deleteBtn.id = "delete";
-        deleteBtn.innerHTML = "Typ löschen";
-        deleteBtn.onclick = deleteType.bind(null);
+        creatBtn.id = "qr";
+        creatBtn.innerHTML = "QR-Code herunterladen";
+        //creatBtn.onclick = creatDevice.bind(null);
 
-        bar.appendChild(deleteBtn);
+        bar.appendChild(creatBtn);
     }
 
     function addLogs() {
@@ -57,20 +65,29 @@ window.onload = function() {
         bar.appendChild(creatBtn);
     }
 
+    function addDelete() {
+
+        let deleteBtn = document.createElement('button');
+
+        deleteBtn.id = "delete";
+        deleteBtn.innerHTML = "Gerät löschen";
+        deleteBtn.onclick = deleteDevice.bind(null);
+
+        bar.appendChild(deleteBtn);
+    }
+
     function addUpdate() {
 
         let updateBtn = document.createElement('button');
 
         updateBtn.id = "update";
-        updateBtn.innerHTML = "Typ aktualisieren";
-        updateBtn.onclick = updateType.bind(null);
+        updateBtn.innerHTML = "Gerät aktualisieren";
+        updateBtn.onclick = updateDevice.bind(null);
 
         bar.appendChild(updateBtn);
     }
 
     function getData(entryID){
-
-        console.log("test")
 
         var param = {
             id : (entryID)
@@ -79,7 +96,7 @@ window.onload = function() {
         async function fetchData(param) {
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/get_type', {
+                const response = await fetch('http://127.0.0.1:5000/get_device', {
 
                     method: 'POST',
                     headers: {
@@ -89,18 +106,20 @@ window.onload = function() {
                 });
 
                 const data = await response.json();
-                console.log("test")
-                console.log(data[0])
 
                 if (data[0] != null) {
 
-                    document.getElementById('name').value = data[0][1];
-                    document.getElementById('device_type').value = data[0][2];
-                    document.getElementById('warranty').value = data[0][3];
-                    document.getElementById('manufacturer').value = data[0][4];
-                    document.getElementById('product_url').value = data[0][5];
-                    document.getElementById('image_url').value = data[0][6];
-                    document.getElementById('comment').value = data[0][7];
+                    document.getElementById('typ').value = data[0][1];
+                    document.getElementById('name').value = data[0][2];
+                    document.getElementById('device_type').value = data[0][3];
+                    document.getElementById('serial_number').value = data[0][4];
+                    document.getElementById('condition').value = data[0][5];
+                    document.getElementById('warranty').value = data[0][6];
+                    document.getElementById('purchase').value = data[0][7];
+                    document.getElementById('manufacturer').value = data[0][8];
+                    document.getElementById('product_url').value = data[0][9];
+                    document.getElementById('image_url').value = data[0][10];
+                    document.getElementById('comment').value = data[0][11];
 
                 } else {
                     window.location.href = "http://127.0.0.1:5000/not_found"
@@ -136,15 +155,15 @@ window.onload = function() {
 
                 const data = await response.json();
 
-                if (data == true && currentUrl.includes('http://127.0.0.1:5000/creat_type')){
+                if (data == true && currentUrl.includes('http://127.0.0.1:5000/creat_device')){
 
                     addCreat()
 
-                }else if (data == false && currentUrl.includes('http://127.0.0.1:5000/creat_type')) {
+                }else if (data == false && currentUrl.includes('http://127.0.0.1:5000/creat_device')) {
 
                     window.location.href = "http://127.0.0.1:5000/denied"
 
-                }else if (data == true && currentUrl.includes('http://127.0.0.1:5000/type')){
+                }else if (data == true && currentUrl.includes('http://127.0.0.1:5000/device')){
 
                     var entryID = currentUrl.split('/').pop();
 
@@ -154,7 +173,7 @@ window.onload = function() {
                     addUpdate()
                     addDelete()
 
-                }else if (data == false && currentUrl.includes('http://127.0.0.1:5000/type')) {
+                }else if (data == false && currentUrl.includes('http://127.0.0.1:5000/device')) {
 
                     var entryID = currentUrl.split('/').pop();
 
@@ -169,10 +188,10 @@ window.onload = function() {
 
         fetchData(param);
 
-    }else if (currentUrl.includes('http://127.0.0.1:5000/creat_type')){
+    }else if (currentUrl.includes('http://127.0.0.1:5000/creat_device')){
         window.location.href = "http://127.0.0.1:5000/denied"
 
-    }else if (currentUrl.includes('http://127.0.0.1:5000/type')){
+    }else if (currentUrl.includes('http://127.0.0.1:5000/device')){
 
         var entryID = currentUrl.split('/').pop();
 
@@ -191,24 +210,29 @@ document.getElementById('image_url').addEventListener('change', function() {
     document.getElementById('img').src = document.getElementById('image_url').value;
 });
 
-function creatType(){
+function creatDevice(){
 
     var param = {
 
+        typ : (document.getElementById('typ').value),
         name : (document.getElementById('name').value),
         device_type : (document.getElementById('device_type').value),
+        serial_number : (document.getElementById('serial_number').value),
+        condition : (document.getElementById('condition').value),
         warranty : (document.getElementById('warranty').value),
+        purchase : (document.getElementById('purchase').value),
         manufacturer : (document.getElementById('manufacturer').value),
         product_url : (document.getElementById('product_url').value),
         image_url : (document.getElementById('image_url').value),
         comment : (document.getElementById('comment').value),
+
     }
 
-    if (param.name != "" && param.device_type != ""){
+    if (param.name != "" && param.serial_number != ""){
 
         async function fetchData() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/add_type', {
+                const response = await fetch('http://127.0.0.1:5000/add_device', {
 
                     method: 'POST',
                     headers: {
@@ -228,7 +252,7 @@ function creatType(){
                     document.getElementById("infoText").style.display = "block"
 
                     await delay(1000);
-                    window.location.href = "http://127.0.0.1:5000/type/"+data[1]+""
+                    window.location.href = "http://127.0.0.1:5000/device/"+data[1]+""
 
                 }else if (data[0] == false){
 
@@ -243,7 +267,7 @@ function creatType(){
                     document.getElementById("infoBox").style.backgroundColor = "#ffd579"
                     document.getElementById("infoText").innerHTML = "Es ist ein fehler aufgetreten"
 
-                    document.gTEXTetElementById("infoBox").style.display = "block"
+                    document.getElementById("infoBox").style.display = "block"
                     document.getElementById("infoText").style.display = "block"
                 }
 
@@ -264,7 +288,7 @@ function creatType(){
     }
 }
 
-function deleteType(){
+function deleteDevice(){
 
     var currentUrl = window.location.href;
     var entryID = currentUrl.split('/').pop();
@@ -275,7 +299,7 @@ function deleteType(){
 
     async function fetchData() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/delete_type', {
+            const response = await fetch('http://127.0.0.1:5000/delete_device', {
 
                 method: 'POST',
                 headers: {
@@ -289,7 +313,7 @@ function deleteType(){
             if (data == true){
 
                 document.getElementById("infoBox").style.backgroundColor = "#a5e1cd"
-                document.getElementById("infoText").innerHTML = "Gerätetyp wurde gelöscht"
+                document.getElementById("infoText").innerHTML = "Geräte wurde gelöscht"
 
                 document.getElementById("infoBox").style.display = "block"
                 document.getElementById("infoText").style.display = "block"
@@ -314,7 +338,7 @@ function deleteType(){
     fetchData(param);
 }
 
-function updateType(){
+function updateDevice(){
 
     var currentUrl = window.location.href;
     var entryID = currentUrl.split('/').pop();
@@ -322,18 +346,23 @@ function updateType(){
     var param = {
 
         id : (entryID),
+        typ : (document.getElementById('typ').value),
         name : (document.getElementById('name').value),
         device_type : (document.getElementById('device_type').value),
+        serial_number : (document.getElementById('serial_number').value),
+        condition : (document.getElementById('condition').value),
         warranty : (document.getElementById('warranty').value),
+        purchase : (document.getElementById('purchase').value),
         manufacturer : (document.getElementById('manufacturer').value),
         product_url : (document.getElementById('product_url').value),
         image_url : (document.getElementById('image_url').value),
         comment : (document.getElementById('comment').value),
+        
     }
 
     async function fetchData() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/update_type', {
+            const response = await fetch('http://127.0.0.1:5000/update_device', {
 
                 method: 'POST',
                 headers: {
@@ -347,10 +376,13 @@ function updateType(){
             if (data == true){
 
                 document.getElementById("infoBox").style.backgroundColor = "#a5e1cd"
-                document.getElementById("infoText").innerHTML = "Gerätetyp wurde aktualisiert"
+                document.getElementById("infoText").innerHTML = "Geräte wurde aktualisiert"
 
                 document.getElementById("infoBox").style.display = "block"
                 document.getElementById("infoText").style.display = "block"
+
+                await delay(1000);
+                window.location.reload();
 
             } else {
 

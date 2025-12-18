@@ -8,13 +8,34 @@
     <header></header>
     <main>
 
-        <h1>Search</h1>
+      <h1>Search</h1>
+      <button onclick="toHome()"> Home </button>
 
-        <button onclick="toHome()"> Home </button>
+      <div style="display: flex; width: 15%;"> 
+
+        <p> Name </p>
+        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="name">
+
+        <p> SN </p>
+        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="serial_number">
         
+        <p> Typ </p>
+        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="typ">
+        
+        <p> Zustand </p>
+        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="condition">
+
+        <button onclick="search()" style="height: 50%; margin: auto; margin-right: 5%;"> Suche </button>
+        <p> Export </p>
+        <select id="export-opt" style="height: 50%; margin: auto; margin-right: 5%;">
+          <option value="null">keine</option>
+          <option value="CSV">CSV</option>
+          <option value="PDF">PDF</option>
+        </select>
+      </div>
     </main>
     <footer>
-       <script src="{{ url_for('static', filename='script.js') }}"></script>
+       <script src="{{ url_for('static', filename='search.js') }}"></script>
     </footer>
   </body>
 </html>
