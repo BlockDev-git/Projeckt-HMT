@@ -1,5 +1,6 @@
 window.onload = function() {
 
+    window.addEventListener('resize', handleResize);
     var loginkey = sessionStorage.getItem("loginKey");
 
     if (loginkey != null) {
@@ -10,7 +11,7 @@ window.onload = function() {
 
         async function fetchData() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/check_key', {
+                const response = await fetch('/check_key', {
 
                     method: 'POST',
                     headers: {
@@ -27,20 +28,21 @@ window.onload = function() {
                     document.getElementById("user").innerHTML = "Admin";
                     document.getElementById("logoutOption").style.display = "block";
                     document.getElementById("changePwOption").style.display = "block";
-                    document.getElementById("suche-btn").style.display = "block";
+                    
+                    document.getElementById("search-btn").style.display = "block";
                     document.getElementById("typ-btn").style.display = "block";
                     document.getElementById("device-btn").style.display = "block";
-                    document.getElementById("logs-btn").style.display = "block";
+                    document.getElementById("log-btn").style.display = "block";
 
                 }else if (data == false){
 
                     document.getElementById("user").innerHTML = "Beobachter";
                     document.getElementById("loginOption").style.display = "block";
-                    document.getElementById("suche-btn").style.display = "block";
-
-                    document.getElementById("typ-btn").style.display = "block";
-                    document.getElementById("device-btn").style.display = "block";
-                    document.getElementById("logs-btn").style.display = "block";
+                    
+                    document.getElementById("search-btn").style.display = "block";
+                    document.getElementById("typ-btn").style.display = "none";
+                    document.getElementById("device-btn").style.display = "none";
+                    document.getElementById("log-btn").style.display = "none";
                 }
 
             } catch (error) {
@@ -53,34 +55,107 @@ window.onload = function() {
         
         document.getElementById("user").innerHTML = "Beobachter";
         document.getElementById("loginOption").style.display = "block";
-        document.getElementById("suche-btn").style.display = "block";
+        
+        document.getElementById("search-btn").style.display = "block";
+        document.getElementById("typ-btn").style.display = "none";
+        document.getElementById("device-btn").style.display = "none";
+        document.getElementById("log-btn").style.display = "none";
+    }
 
-        document.getElementById("typ-btn").style.display = "block";
-        document.getElementById("device-btn").style.display = "block";
-        document.getElementById("logs-btn").style.display = "block";
+    // ---------- Load Charts ----------
 
+    async function loadChart() {
+        const response = await fetch("/device_status_stats");
+        const stats = await response.json();
+
+        const labels = Object.keys(stats);
+        const data = Object.values(stats);
+        const total = data.reduce((a, b) => a + b, 0);
+
+        document.getElementById("totalDevices").innerText = total;
+
+        const colors = [
+        "#A5E1CD", "#FF7D7D", "#CFC4FF", "#FFD579",
+        ];
+
+        new Chart(document.getElementById("statusChart"), {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+            data: data,
+            backgroundColor: colors.slice(0, labels.length)
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+            legend: {
+                position: "bottom",
+                labels: {
+                generateLabels: function(chart) {
+                    const dataset = chart.data.datasets[0];
+                    return chart.data.labels.map((label, i) => {
+                    const value = dataset.data[i];
+                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return {
+                        text: `${label} (${percentage}%)`,
+                        fillStyle: dataset.backgroundColor[i],
+                        strokeStyle: dataset.backgroundColor[i],
+                        lineWidth: 1,
+                        hidden: false,
+                        index: i
+                    };
+                    });
+                }
+                }
+            },
+            }
+        }
+        });
+    }
+
+    loadChart();
+}
+
+function handleResize() {
+    if (window.innerWidth < 500) {
+        document.getElementById("projectTitle").innerHTML = "HMT"
+    }else{
+        document.getElementById("projectTitle").innerHTML = "Hardware Management Tool"
     }
 }
 
+handleResize();
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+function toLog(){
+    window.location.href = "/log";
+}
+
 function toSearch(){
-    window.location.href = "http://127.0.0.1:5000/search";
+    window.location.href = "/search";
 }
 
 function toDevice(){
-    window.location.href = "http://127.0.0.1:5000/creat_device"
+    window.location.href = "/creat_device"
 }
 
 function toType(){
-    window.location.href = "http://127.0.0.1:5000/creat_type"
+    window.location.href = "/creat_type"
 }
 
 function toHome(){
-    window.location.href = "http://127.0.0.1:5000/"
+    window.location.href = "/"
 }
 
 // ---------- Login Popup ----------
+
+function toggleDropdown() {
+    const dropdownOptions = document.getElementById('dropdownOptions');
+    dropdownOptions.style.display = dropdownOptions.style.display === 'block' ? 'none' : 'block';
+}
 
 function toLogin() {
 
@@ -132,7 +207,7 @@ function login(){
 
     async function fetchData() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/check_password', {
+            const response = await fetch('/check_password', {
 
                 method: 'POST',
                 headers: {
@@ -146,7 +221,7 @@ function login(){
 
             if (data[0] == true) {
 
-                document.getElementById("infoBoxLogin").style.backgroundColor = "#a5e1cd"
+                document.getElementById("infoBoxLogin").style.borderColor = "#a5e1cd"
                 document.getElementById("infoTextLogin").innerHTML = "Anmeldung erfolgreich"
 
                 document.getElementById("infoBoxLogin").style.display = "block"
@@ -158,7 +233,7 @@ function login(){
 
             } else if (data[0] == false) {
 
-                document.getElementById("infoBoxLogin").style.backgroundColor = "#ff7d7d"
+                document.getElementById("infoBoxLogin").style.borderColor = "#ff7d7d"
                 document.getElementById("infoTextLogin").innerHTML = "Password inkorrekt"
 
                 document.getElementById("infoBoxLogin").style.display = "block"
@@ -166,7 +241,7 @@ function login(){
 
             }else {
 
-                document.getElementById("infoBoxLogin").style.backgroundColor = "#ffd579"
+                document.getElementById("infoBoxLogin").style.borderColor = "#ffd579"
                 document.getElementById("infoTextLogin").innerHTML = "Anmeldung fehlgeschlagen"
 
                 document.getElementById("infoBoxLogin").style.display = "block"
@@ -193,7 +268,7 @@ function changePw(){
 
     async function fetchData() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/check_password', {
+            const response = await fetch('/check_password', {
 
                 method: 'POST',
                 headers: {
@@ -218,7 +293,7 @@ function changePw(){
 
                     async function fetchNewData() {
                         try {
-                            const response = await fetch('http://127.0.0.1:5000/update_password', {
+                            const response = await fetch('/update_password', {
 
                                 method: 'POST',
                                 headers: {
@@ -231,7 +306,7 @@ function changePw(){
 
                             if (data == true) {
 
-                                document.getElementById("infoBoxChangePW").style.backgroundColor = "#a5e1cd"
+                                document.getElementById("infoBoxChangePW").style.borderColor = "#a5e1cd"
                                 document.getElementById("infoTextChangePW").innerHTML = "Passwort änderung erfolgreich"
 
                                 document.getElementById("infoBoxChangePW").style.display = "block"
@@ -242,7 +317,7 @@ function changePw(){
 
                             }else {
 
-                                document.getElementById("infoBoxChangePW").style.backgroundColor = "#ffd579"
+                                document.getElementById("infoBoxChangePW").style.borderColor = "#ffd579"
                                 document.getElementById("infoTextChangePW").innerHTML = "Passwort änderung fehlgeschlagen"
 
                                 document.getElementById("infoBoxChangePW").style.display = "block"
@@ -257,7 +332,7 @@ function changePw(){
                     fetchNewData(newParam);
                 }else if (newPasswort.value != repeatPasswort.value){
 
-                    document.getElementById("infoBoxChangePW").style.backgroundColor = "#ffd579"
+                    document.getElementById("infoBoxChangePW").style.borderColor = "#ffd579"
                     document.getElementById("infoTextChangePW").innerHTML = "Wiederholtes Password nicht ident mit neuem Passwort"
 
                     document.getElementById("infoBoxChangePW").style.display = "block"
@@ -265,7 +340,7 @@ function changePw(){
 
                 }else if (newPasswort.value == "" && repeatPasswort.value == ""){
 
-                    document.getElementById("infoBoxChangePW").style.backgroundColor = "#ffd579"
+                    document.getElementById("infoBoxChangePW").style.borderColor = "#ffd579"
                     document.getElementById("infoTextChangePW").innerHTML = "Neues Passwort ist nicht erlaubt"
 
                     document.getElementById("infoBoxChangePW").style.display = "block"
@@ -274,7 +349,7 @@ function changePw(){
 
             } else if (data[0] == false) {
 
-                document.getElementById("infoBoxChangePW").style.backgroundColor = "#ff7d7d"
+                document.getElementById("infoBoxChangePW").style.borderColor = "#ff7d7d"
                 document.getElementById("infoTextChangePW").innerHTML = "Password inkorrekt"
 
                 document.getElementById("infoBoxChangePW").style.display = "block"
@@ -282,7 +357,7 @@ function changePw(){
 
             }else {
 
-                document.getElementById("infoBoxChangePW").style.backgroundColor = "#ffd579"
+                document.getElementById("infoBoxChangePW").style.borderColor = "#ffd579"
                 document.getElementById("infoTextChangePW").innerHTML = "fehlgeschlagen"
 
                 document.getElementById("infoBoxChangePW").style.display = "block"
@@ -307,7 +382,7 @@ function logout(){
 
     async function fetchData() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/logout', {
+            const response = await fetch('/logout', {
 
                 method: 'POST',
                 headers: {

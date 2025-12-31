@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+
+      <div class="topbar-bar">
+
+        <div style="display: flex;">
+
+          <div style="display: flex;">
+            <img class="topbar-img" src="{{ url_for('static', filename='logo.png') }}">
+            <p id="projectTitle" class="topbar-title"> Hardware Management Tool </p>
+          </div>
+
+          <div style="display: flex; position: absolute; right: 0px;">
+
+            <p class="topbar-title" style="margin-right: 25px;" id="user"> User </p>
+
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="big-box" style="height: 50px; display: flex; width: 99.2%;">
+        
+        <button onclick="toHome()" class="normal-btn" style="width: 40px; height: 40px; margin-top: 5px;">
+          <span style="margin: auto; font-size: 15px;" class="material-icons">arrow_back</span>
+        </button>
+
+        <p class="topbar-title" style="color: #000000; margin: auto; font-size: 30px;"> Logs </p>
+
+      </div>
+
+      <br>
+
+      <div class="info-box" style="width: 99.2%; border-color: #ffd579;">
+        <p style="color: #000000;" > Logs älter als 30 Tage werden automatisch gelöscht  </p>
+      </div>
+
+      <br>
+
+      <div class="big-box" style="width: 99.2%; height: 50px;">
+
+        <div style="display: flex;"> 
+
+          <div style="display: flex; width: 100%; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto;"> Zeit </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px;">
+              <span style="margin-left: 1.5px; margin-top: 2px;" class="material-icons">calendar_month</span>
+            </div>
+            <input class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="date" id="date">
+          </div>
+
+          <div style="display: flex; width: 100%; margin-left: 10px; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto; white-space: nowrap"> Gerät oder Typ </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px;">
+              <span style="margin-left: 2.5px; margin-top: 2px;" class="material-icons">label</span>
+            </div>
+            <input class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="text" id="name" placeholder="S/N oder Name">
+          </div>
+
+          <div style="display: flex; width: 100%; margin-left: 10px; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto;"> Aktion </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px;">
+              <span style="margin-left: 2.5px; margin-top: 2px;" class="material-icons">bolt</span>
+            </div>
+            <input list="list" class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="text" id="action" placeholder="Aktion">
+            <datalist id="list">
+              <option value="Abmeldung"></option>  
+              <option value="Anmeldung"></option> 
+              <option value="Passwortänderung"></option> 
+              <option value="Typ Erstellt"></option>  
+              <option value="Typ Gelöscht"></option>  
+              <option value="Typ Aktualisiert"></option> 
+              <option value="Gerät Erstellt"></option>  
+              <option value="Gerät Gelöscht"></option>  
+              <option value="Gerät Aktualisiert"></option>  
+            </datalist>
+          </div>
+
+          <button onclick="search()" id="search" class="normal-btn" style="height: 30px; display: flex; margin-top: 10px;">
+            <span style="margin-top: 1px;" class="material-icons">search</span>
+            <p style="margin-left: 5px; margin-top: auto; margin-bottom: auto;"> Suchen </p>
+          </button>
+
+          <button onclick="exportAsCSV()" class="normal-btn" style="height: 30px; display: flex; margin-top: 10px;">
+            <span style="margin-top: 1px;" class="material-icons">download</span>
+            <p style="margin-left: 5px; margin-top: auto; margin-bottom: auto;"> Export Logs als CSV </p>
+          </button>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="big-box" id="log_div" style="display: none; width: 99.2%;">
+        <div id="log_box" style="padding-top: 10px; width: 99.2%;"> </div>
+        <br>
+      </div>
+
+      <br>
+
+      <div id="load_more_box" style="display: none;">
+        <div class="big-box" style="width: 99.2%; height: 50px; display: flex;">
+          <button onclick="loadMore()" id="load_more" class="normal-btn" style="height: 30px; display: flex; margin-top: 10px; justify-content: center;">
+              <span style="margin-top: 1px;" class="material-icons">refresh</span>
+              <p style="margin-left: 5px; margin-top: auto; margin-bottom: auto;"> Mehr laden </p>
+            </button>
+        </div>
+      </div>
+
+    </main>
+    <footer>
+
+      <script src="{{ url_for('static', filename='log.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    </footer>
+  </body>
+</html>
