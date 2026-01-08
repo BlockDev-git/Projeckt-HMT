@@ -4,7 +4,7 @@ window.onload = function() {
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 function toHome(){
-    window.location.href = "http://127.0.0.1:5000/"
+    window.location.href = "/"
 }
 
 function search(){
@@ -19,7 +19,7 @@ function search(){
 
     async function fetchData() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/search_device', {
+                const response = await fetch('/search_device', {
 
                     method: 'POST',
                     headers: {

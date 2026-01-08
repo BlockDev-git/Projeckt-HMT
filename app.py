@@ -8,8 +8,6 @@ import uuid
 import bcrypt
 import io
 import qrcode
-#import socket
-#from zeroconf import IPVersion, ServiceInfo, Zeroconf
 
 app = Flask(__name__)
 scheduler = APScheduler()
@@ -58,6 +56,7 @@ def device(deviceID):
 
 @app.route('/check_password', methods=['POST'])
 def check_password():
+
     data = request.json
     input_password = data['param']['password']
 
@@ -79,14 +78,10 @@ def check_password():
         connection = sqlite3.connect("Database.db")
         corsor = connection.cursor()
 
-        expiration = datetime.now()
-        expiration = expiration + timedelta(minutes=10)
-
         key = str(uuid.uuid4())
 
         corsor.execute("INSERT INTO connections (key) VALUES (?)", [key])
-        #corsor.execute("INSERT INTO connections (key, expiration) VALUES (?, ?)", [key, expiration])
-        corsor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", ["", "Anmeldung", "Admin Benutzer ist nun angemeldet"])
+        corsor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), "", "Anmeldung", "Admin Benutzer ist nun angemeldet"])
         connection.commit() 
         connection.close()
 
@@ -138,7 +133,7 @@ def update_password():
     new_password = bcrypt.hashpw(new_password, salt[0][0])
 
     cursor.execute("UPDATE users SET password=? WHERE username=?", (new_password, "admin"))
-    cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", ["", "Passwortänderung", "Passwort wurde für den Admin Benutzer geändert"])
+    cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), "", "Passwortänderung", "Passwort wurde für den Admin Benutzer geändert"])
     connection.commit()
     connection.close()
 
@@ -155,7 +150,7 @@ def logout():
     corsor = connection.cursor()
 
     corsor.execute("delete from connections where key=:key", {"key": str(key)})
-    corsor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", ["", "Abmeldung", "Admin Benutzer ist nun abgemeldet"])
+    corsor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), "", "Abmeldung", "Admin Benutzer ist nun abgemeldet"])
     connection.commit()
     connection.close()
 
@@ -171,7 +166,7 @@ def task():
     for row in corsor.execute("SELECT * FROM connections WHERE created_at < DATETIME('now', 'localtime', '-9 minutes')"):
 
         corsor.execute("delete from connections where id=:id", {"id": row[0]})
-        corsor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", ["", "Abmeldung", "Admin Benutzer ist nun abgemeldet"])
+        corsor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", ["", "", "Abmeldung", "Admin Benutzer ist nun abgemeldet"])
         connection.commit() 
     
     connection.close()
@@ -204,7 +199,7 @@ def add_type():
 
         if item == []:
             cursor.execute("INSERT INTO device_typ (name, device_type, warranty, manufacturer, product_url, img_hash, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, device_type, warranty, manufacturer, product_url, "", comment, time))
-            cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", [str(name), "Typ Erstellt", "Der Typ: "+str(name)+" wurde erstellt"])
+            cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(name), "Typ Erstellt", "Der Typ: "+str(name)+" wurde erstellt"])
             connection.commit()
             cursor.execute("SELECT id FROM device_typ WHERE created_at=:created_at",{"created_at": str(time)})
             item = cursor.fetchall()
@@ -284,7 +279,7 @@ def delete_type():
         name = cursor.fetchall()
 
         cursor.execute("DELETE FROM device_typ WHERE id=:id",{"id": str(id)})
-        cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", [str(name[0][0]), "Typ Gelöscht", "Der Typ: "+str(name[0][0])+" wurde gelöscht"])
+        cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(name[0][0]), "Typ Gelöscht", "Der Typ: "+str(name[0][0])+" wurde gelöscht"])
         
         connection.commit()
         connection.close()
@@ -323,7 +318,7 @@ def update_type():
             img_not_in_use("typ", id)
 
             cursor.execute("UPDATE device_typ SET name=:name, device_type=:device_type, warranty=:warranty, manufacturer=:manufacturer, product_url=:product_url, img_hash=:img_hash, comment=:comment WHERE id=:id", {"id": id, "name": name, "device_type": device_type, "warranty": warranty, "manufacturer": manufacturer, "product_url": product_url, "img_hash": "", "comment": comment})
-            cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", [str(name), "Typ Aktualisiert", "Der Typ: "+str(name)+" wurde aktualisiert"])
+            cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(name), "Typ Aktualisiert", "Der Typ: "+str(name)+" wurde aktualisiert"])
             connection.commit()
             connection.close()
 
@@ -367,7 +362,7 @@ def add_device():
 
         if item == []:
             cursor.execute("INSERT INTO device (typ, name, device_type, serial_number, condition, location, warranty, purchase, manufacturer, product_url, img_hash, comment, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (typ, name, device_type, serial_number, condition, location, warranty, purchase, manufacturer, product_url, "", comment, time))
-            cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", [str(serial_number), "Gerät Erstellt", "Das Gerät: "+str(serial_number)+" wurde erstellt"])
+            cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(serial_number), "Gerät Erstellt", "Das Gerät: "+str(serial_number)+" wurde erstellt"])
             connection.commit()
             cursor.execute("SELECT id FROM device WHERE created_at=:created_at",{"created_at": str(time)})
             item = cursor.fetchall()
@@ -417,7 +412,7 @@ def delete_device():
         sn = cursor.fetchall()
 
         cursor.execute("DELETE FROM device WHERE id=:id",{"id": str(id)})
-        cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", [str(sn[0][0]), "Gerät Gelöscht", "Das Gerät: "+str(sn[0][0])+" wurde gelöscht"])
+        cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(sn[0][0]), "Gerät Gelöscht", "Das Gerät: "+str(sn[0][0])+" wurde gelöscht"])
         
         connection.commit()
         connection.close()
@@ -462,7 +457,7 @@ def update_device():
             cursor = connection.cursor()
 
             cursor.execute("UPDATE device SET typ=:typ, name=:name, device_type=:device_type, serial_number=:serial_number, condition=:condition, location=:location, warranty=:warranty, purchase=:purchase, manufacturer=:manufacturer, product_url=:product_url, img_hash=:img_hash, comment=:comment WHERE id=:id", {"id": id, "typ": typ , "name": name, "device_type": device_type, "serial_number": serial_number, "condition": condition, "location": location, "warranty": warranty, "purchase": purchase, "manufacturer": manufacturer, "product_url": product_url, "img_hash": "", "comment": comment})
-            cursor.execute("INSERT INTO log (object, action, details) VALUES (?, ?, ?)", [str(serial_number), "Gerät Aktualisiert", "Das Gerät: "+str(serial_number)+" wurde aktualisiert"])
+            cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(serial_number), "Gerät Aktualisiert", "Das Gerät: "+str(serial_number)+" wurde aktualisiert"])
             connection.commit()
             connection.close()
 
@@ -494,7 +489,7 @@ def search_device():
     connection.commit()
     connection.close()
 
-    return jsonify(data)
+    return jsonify(devices)
 
 # ---------------- LOG ----------------
 
@@ -507,11 +502,12 @@ def get_all_logs():
     time = data['param']['time']
     object = data['param']['object']
     action = data['param']['action']
+    ip = data['param']['ip']
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM log WHERE created_at LIKE :time AND object LIKE :object AND action LIKE :action ORDER BY created_at DESC", {"time": '%'+str(time)+'%', "object": '%'+str(object)+'%', "action": '%'+str(action)+'%'})
+    cursor.execute("SELECT * FROM log WHERE created_at LIKE :time AND ip LIKE :ip AND object LIKE :object AND action LIKE :action ORDER BY created_at DESC", {"time": '%'+str(time)+'%', "ip": '%'+str(ip)+'%', "object": '%'+str(object)+'%', "action": '%'+str(action)+'%'})
     logs = cursor.fetchall()
     connection.close()
 
@@ -522,6 +518,7 @@ def get_next_logs():
 
     data = request.json
     time = data['param']['time']
+    ip = data['param']['ip']
     object = data['param']['object']
     action = data['param']['action']
     next = data['param']['next']
@@ -529,7 +526,7 @@ def get_next_logs():
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM log WHERE created_at LIKE :time AND object LIKE :object AND action LIKE :action ORDER BY created_at DESC LIMIT 10 OFFSET :next", {"time": '%'+str(time)+'%', "object": '%'+str(object)+'%', "action": '%'+str(action)+'%', "next": int(next)})
+    cursor.execute("SELECT * FROM log WHERE created_at LIKE :time AND ip LIKE :ip AND object LIKE :object AND action LIKE :action ORDER BY created_at DESC LIMIT 10 OFFSET :next", {"time": '%'+str(time)+'%', "ip": '%'+str(ip)+'%', "object": '%'+str(object)+'%', "action": '%'+str(action)+'%', "next": int(next)})
     logs = cursor.fetchall()
     connection.close()
 
@@ -772,33 +769,6 @@ def device_status_stats():
             stats[status] = count
 
     return jsonify(stats)
-
-
-# ---------------- mDNS ----------------
-
-# def register_service():
-#     # get local IP address
-#     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#     s.connect(("8.8.8.8", 80))
-#     local_ip = s.getsockname()[0]
-#     s.close()
-
-#     # define service details
-#     desc = {'path': '/'}
-#     info = ServiceInfo(
-#         "_http._tcp.local.",
-#         "Flask-Server._http._tcp.local.",
-#         addresses=[socket.inet_aton(local_ip)],
-#         port=5000,
-#         properties=desc,
-#         server="hmt.local.",
-#     )
-
-#     # register service
-#     zc = Zeroconf(ip_version=IPVersion.All)
-#     print(f"Registering service as hmt.local on {local_ip}...")
-#     zc.register_service(info)
-#     return zc, info
  
 if __name__ == '__main__':
 
@@ -833,7 +803,7 @@ if __name__ == '__main__':
     corsor.execute("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY AUTOINCREMENT, img_name TEXT, img_hash TEXT, img_data BLOB, created_at DATETIME DEFAULT (datetime('now','localtime')))")
 
     # Log-Tabelle
-    corsor.execute("CREATE TABLE IF NOT EXISTS log (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME DEFAULT (datetime('now','localtime')), object TEXT, action TEXT, details TEXT)")
+    corsor.execute("CREATE TABLE IF NOT EXISTS log (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME DEFAULT (datetime('now','localtime')), ip TEXT, object TEXT, action TEXT, details TEXT)")
 
     # start log tasks and key expiration task
     scheduler.init_app(app)
@@ -844,15 +814,3 @@ if __name__ == '__main__':
 
     # start server on http://[curent ip of the device]:5000
     app.run(host='0.0.0.0', port=5000, debug=True)
-
-    # start server on http://hmt.local:5000
-    # zc, info = register_service()
-    
-    # try:
-    #     # Run Flask (setting host to 0.0.0.0 is required)
-    #     app.run(host='0.0.0.0', port=5000, debug=False)
-    # finally:
-    #     # Cleanup on exit
-    #     print("Unregistering...")
-    #     zc.unregister_service(info)
-    #     zc.close()

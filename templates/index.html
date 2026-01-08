@@ -28,6 +28,7 @@
                 <a class="option" onclick="toLogin()" id="loginOption" style="display: none;">Anmelden</a>
                 <a class="option" onclick="logout()" id="logoutOption" style="display: none;">Abmelden</a>
                 <a class="option" onclick="toChangePW()" id="changePwOption" style="display: none;">Passwort ändern </a>
+                <a class="option" onclick="toChangeSettings()" id="settingOption" style="display: none;">Einstellungen</a>
             </div>
           </div>
         </div>
@@ -35,8 +36,8 @@
 
       <!-- Login Popup -->
 
-      <div class="loginOverlay"> </div>
-      <div class="loginPopup">
+      <div class="overlay" id="loginOverlay"> </div>
+      <div class="popup" id="loginPopup">
         <div style="display: flex;">
           <h2 style="font-family: Arial, Helvetica, sans-serif; text-align: center;">Anmelden</h2>
           <button onclick="closeToLogin()" class="normal-btn" style="margin-left: 50%; margin-top: 6.5%; width: 28px; height: 28px;">
@@ -64,8 +65,8 @@
 
       <!-- Change PW Popup -->
 
-      <div class="changePWOverlay"> </div>
-      <div class="changePWPopup">
+      <div class="overlay" id="pwOverlay"> </div>
+      <div class="popup" id="pwPopup">
         <div style="display: flex;">
           <h2 style="font-family: Arial, Helvetica, sans-serif;">Passwort ändern</h2>
           <button onclick="closeToChangePW()" class="normal-btn" style="margin-left: 50%; margin-top: 6.5%; width: 28px; height: 28px;">
@@ -103,6 +104,34 @@
               <p id="infoTextChangePW" style="color: #000000; display: none;"> Änderung - - - </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Settings Popup -->
+
+      <div class="overlay" id="settingsOverlay"> </div>
+      <div class="popup" id="settingsPopup">
+        <div style="display: flex;">
+          <h2 style="font-family: Arial, Helvetica, sans-serif; text-align: center;">Einstellungen</h2>
+          <button onclick="closeToChangeSettings()" class="normal-btn" style="margin-left: 37%; margin-top: 6.5%; width: 28px; height: 28px;">
+            <span style="margin: auto; font-size: 15px;" class="material-icons">close</span>
+        </div>
+        <div>
+          <div style="display: flex; width: 98%;"> 
+            <p style="white-space: nowrap;"> Aussehen </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
+              <span style="margin-left: 1px; margin-top: 2px;" class="material-icons">key</span>
+            </div>
+            <select id="theme" class="input" style="width: 100%; height: 30px; margin: auto;">
+              <option value="light">Hell</option>
+              <option value="dark">Dunkel</option>
+            </select>
+          </div>
+
+          <div style="display: flex;">
+            <button class="normal-btn" style="width: 100%; height: 30px;" onclick="changeSettings()"> Übernehmen </button>
+          </div>
+          <br>
         </div>
       </div>
 

@@ -28,6 +28,7 @@ window.onload = function() {
                     document.getElementById("user").innerHTML = "Admin";
                     document.getElementById("logoutOption").style.display = "block";
                     document.getElementById("changePwOption").style.display = "block";
+                    document.getElementById("settingOption").style.display = "block";
                     
                     document.getElementById("search-btn").style.display = "block";
                     document.getElementById("typ-btn").style.display = "block";
@@ -38,6 +39,7 @@ window.onload = function() {
 
                     document.getElementById("user").innerHTML = "Beobachter";
                     document.getElementById("loginOption").style.display = "block";
+                    document.getElementById("settingOption").style.display = "block";
                     
                     document.getElementById("search-btn").style.display = "block";
                     document.getElementById("typ-btn").style.display = "none";
@@ -55,6 +57,7 @@ window.onload = function() {
         
         document.getElementById("user").innerHTML = "Beobachter";
         document.getElementById("loginOption").style.display = "block";
+        document.getElementById("settingOption").style.display = "block";
         
         document.getElementById("search-btn").style.display = "block";
         document.getElementById("typ-btn").style.display = "none";
@@ -83,7 +86,7 @@ window.onload = function() {
         data: {
             labels: labels,
             datasets: [{
-            data: data,
+            Chartsdata: data,
             backgroundColor: colors.slice(0, labels.length)
             }]
         },
@@ -159,8 +162,8 @@ function toggleDropdown() {
 
 function toLogin() {
 
-    document.querySelector(".loginPopup").style.display = "block";
-    document.querySelector(".loginOverlay").style.display = "block";
+    document.getElementById("loginPopup").style.display = "block";
+    document.getElementById("loginOverlay").style.display = "block";
 
     document.getElementById("infoBoxLogin").style.display = "none";
     document.getElementById("infoTextLogin").style.display = "none";
@@ -170,16 +173,16 @@ function toLogin() {
 
 function closeToLogin() {
 
-    document.querySelector(".loginPopup").style.display = "none";
-    document.querySelector(".loginOverlay").style.display = "none";
+    document.getElementById("loginPopup").style.display = "none";
+    document.getElementById("loginOverlay").style.display = "none";
 }
 
 // ---------- Change Password Popup ----------
 
 function toChangePW() {
 
-    document.querySelector(".changePWPopup").style.display = "block";
-    document.querySelector(".changePWOverlay").style.display = "block";
+    document.getElementById("pwPopup").style.display = "block";
+    document.getElementById("pwOverlay").style.display = "block";
 
     document.getElementById("infoBoxChangePW").style.display = "none";
     document.getElementById("infoTextChangePW").style.display = "none";
@@ -191,8 +194,29 @@ function toChangePW() {
 
 function closeToChangePW() {
 
-    document.querySelector(".changePWPopup").style.display = "none";
-    document.querySelector(".changePWOverlay").style.display = "none";
+    document.getElementById("pwPopup").style.display = "none";
+    document.getElementById("pwOverlay").style.display = "none";
+}
+
+// ---------- Settings Popup ----------
+
+function toChangeSettings() {
+
+    document.getElementById("settingsPopup").style.display = "block";
+    document.getElementById("settingsOverlay").style.display = "block";
+
+    // document.getElementById("infoBoxChangePW").style.display = "none";
+    // document.getElementById("infoTextChangePW").style.display = "none";
+
+    // document.getElementById("currentPasswort").value = "";
+    // document.getElementById("repeatPasswort").value = "";
+    // document.getElementById("newPasswort").value = "";
+}
+
+function closeToChangeSettings() {
+
+    document.getElementById("settingsPopup").style.display = "none";
+    document.getElementById("settingsOverlay").style.display = "none";
 }
 
 // ---------- Function Login ----------
@@ -400,4 +424,13 @@ function logout(){
     }
 
     fetchData(param);
+}
+
+async function changeSettings(){
+
+    let theme = document.getElementById("theme").value;
+    console.log(theme);
+
+    await delay(1000);
+    toHome();
 }

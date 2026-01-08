@@ -77,6 +77,7 @@ function getLogs(next){
 
     var param = {
         time : (document.getElementById('date').value),
+        ip : (document.getElementById('ip').value),
         object : (document.getElementById('name').value),
         action : (document.getElementById('action').value),
         next : (next)
@@ -140,6 +141,38 @@ function getLogs(next){
                     timeDiv.appendChild(timeIconBox);
                     timeDiv.appendChild(timeInput);
 
+                    // ip div
+
+                    let ipDiv = document.createElement('div');
+                    let ipText = document.createElement('p');
+                    let ipIconBox = document.createElement('div');
+                    let ipIcon = document.createElement('span');
+                    let ipInput = document.createElement('input');
+
+                    ipDiv.style = "display: flex; width: 30%; margin-left: 10px;";
+                    
+                    ipText.style = "margin: auto;";
+                    ipText.innerHTML = "IP";
+
+                    ipIconBox.classList = "normal-box";
+                    ipIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px;";
+
+                    ipIcon.classList = "material-icons"
+                    ipIcon.innerHTML = "computer";
+                    ipIcon.style = "margin-left: 1.5px; margin-top: 2px;";
+
+                    ipInput.classList = "input";
+                    ipInput.style = "width: 100%; margin: auto; margin-left: 5px;";
+                    ipInput.type = "text";
+                    ipInput.readOnly = true;
+                    ipInput.value = ""+element[2]+"";
+
+                    ipIconBox.appendChild(ipIcon);
+
+                    ipDiv.appendChild(ipText);
+                    ipDiv.appendChild(ipIconBox);
+                    ipDiv.appendChild(ipInput);
+
                     // object div
 
                     let objectDiv = document.createElement('div');
@@ -164,7 +197,7 @@ function getLogs(next){
                     objectInput.style = "width: 100%; margin: auto; margin-left: 5px;";
                     objectInput.type = "text";
                     objectInput.readOnly = true;
-                    objectInput.value = ""+element[2]+"";
+                    objectInput.value = ""+element[3]+"";
 
                     objectIconBox.appendChild(objectIcon);
 
@@ -200,18 +233,18 @@ function getLogs(next){
 
                     actionBox.classList = "normal-box"
 
-                    if (greenList.includes(element[3])) {
+                    if (greenList.includes(element[4])) {
                         actionBox.style = "height: 28px; margin-top: 4px; width: 100%; border-color: #a5e1cd;";
-                    } else if (orangeList.includes(element[3])) {
+                    } else if (orangeList.includes(element[4])) {
                         actionBox.style = "height: 28px; margin-top: 4px; width: 100%; border-color: #ffd579;";
-                    } else if (redList.includes(element[3])) {
+                    } else if (redList.includes(element[4])) {
                         actionBox.style = "height: 28px; margin-top: 4px; width: 100%; border-color: #ff7d7d;";
-                    } else if (purpleList.includes(element[3])) {
+                    } else if (purpleList.includes(element[4])) {
                         actionBox.style = "height: 28px; margin-top: 4px; width: 100%; border-color: #CFC4FF;";
                     }
 
                     actionBoxText.style = "margin-top: 4px; text-align: center;";
-                    actionBoxText.innerHTML = ""+element[3]+""
+                    actionBoxText.innerHTML = ""+element[4]+""
 
                     actionIconBox.appendChild(actionIcon);
 
@@ -245,7 +278,7 @@ function getLogs(next){
                     infoInput.style = "width: 100%; margin: auto; margin-left: 5px; margin-right: 5px;";
                     infoInput.type = "text";
                     infoInput.readOnly = true;
-                    infoInput.value = ""+element[4]+"";
+                    infoInput.value = ""+element[5]+"";
 
                     infoIconBox.appendChild(infoIcon);
 
@@ -254,6 +287,7 @@ function getLogs(next){
                     infoDiv.appendChild(infoInput);
 
                     mainDiv.appendChild(timeDiv);
+                    mainDiv.appendChild(ipDiv);
                     mainDiv.appendChild(objectDiv);
                     mainDiv.appendChild(actionDiv);
                     mainDiv.appendChild(infoDiv);
@@ -295,6 +329,7 @@ function exportAsCSV() {
 
     var param = {
         time : (""),
+        ip : (""),
         object : (""),
         action : ("")
     }
@@ -315,7 +350,7 @@ function exportAsCSV() {
             if (data != null) {
 
                 function arrayToCSV(data) {
-                    const headers = ["ID", "Datum", "Object", "Aktion", "Details"];
+                    const headers = ["ID", "Datum", "IP Adresse", "Object", "Aktion", "Details"];
                     const rows = data.map(row => 
                         row.map(item => `"${item}"`).join(',')
                     );
