@@ -2,6 +2,8 @@
 
 entriesLoaded = 0
 
+// execute when page done loading
+
 window.onload = function() {
 
     // this fills out fields that are given
@@ -60,6 +62,8 @@ window.onload = function() {
         window.location.href = "/denied"
     }
 }
+
+// deley function
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -123,11 +127,10 @@ function getLogs(next){
                     timeText.innerHTML = "Zeit";
 
                     timeIconBox.classList = "normal-box";
-                    timeIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px;";
+                    timeIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;";
 
-                    timeIcon.classList = "material-icons"
+                    timeIcon.classList = "material-icons icons"
                     timeIcon.innerHTML = "calendar_month";
-                    timeIcon.style = "margin-left: 1.5px; margin-top: 2px;";
 
                     timeInput.classList = "input";
                     timeInput.style = "width: 100%; margin: auto; margin-left: 5px;";
@@ -155,11 +158,10 @@ function getLogs(next){
                     ipText.innerHTML = "IP";
 
                     ipIconBox.classList = "normal-box";
-                    ipIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px;";
+                    ipIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;";
 
-                    ipIcon.classList = "material-icons"
+                    ipIcon.classList = "material-icons icons"
                     ipIcon.innerHTML = "computer";
-                    ipIcon.style = "margin-left: 1.5px; margin-top: 2px;";
 
                     ipInput.classList = "input";
                     ipInput.style = "width: 100%; margin: auto; margin-left: 5px;";
@@ -187,11 +189,10 @@ function getLogs(next){
                     objectText.innerHTML = "Gerät / Typ";
 
                     objectIconBox.classList = "normal-box";
-                    objectIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px;";
+                    objectIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;";
 
-                    objectIcon.classList = "material-icons"
+                    objectIcon.classList = "material-icons icons"
                     objectIcon.innerHTML = "label";
-                    objectIcon.style = "margin-left: 1.5px; margin-top: 2px;";
 
                     objectInput.classList = "input";
                     objectInput.style = "width: 100%; margin: auto; margin-left: 5px;";
@@ -220,11 +221,10 @@ function getLogs(next){
                     actionText.innerHTML = "Aktion";
 
                     actionIconBox.classList = "normal-box";
-                    actionIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px;";
+                    actionIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;";
 
-                    actionIcon.classList = "material-icons"
+                    actionIcon.classList = "material-icons icons"
                     actionIcon.innerHTML = "bolt";
-                    actionIcon.style = "margin-left: 1.5px; margin-top: 2px;";
 
                     var greenList = ["Typ Erstellt","Gerät Erstellt"]
                     var orangeList = ["Passwortänderung","Anmeldung","Abmeldung"]
@@ -268,11 +268,10 @@ function getLogs(next){
                     infoText.innerHTML = "Deteils";
 
                     infoIconBox.classList = "normal-box";
-                    infoIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px;";
+                    infoIconBox.style = "height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;";
 
-                    infoIcon.classList = "material-icons"
+                    infoIcon.classList = "material-icons icons"
                     infoIcon.innerHTML = "info";
-                    infoIcon.style = "margin-left: 2px; margin-top: 2px;";
 
                     infoInput.classList = "input";
                     infoInput.style = "width: 100%; margin: auto; margin-left: 5px; margin-right: 5px;";

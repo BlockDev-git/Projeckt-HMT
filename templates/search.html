@@ -3,39 +3,135 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+
+    <link id="theme_style" rel="stylesheet" href="{{ url_for('static', filename='darkstyle.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+
+    <script>
+      (function() {
+        var theme = localStorage.getItem("theme");
+        if (theme != null) {
+
+            if (theme == "dark") {
+                document.getElementById('theme_style').href = "/static/darkstyle.css";
+            } else if(theme == "light") {
+                document.getElementById('theme_style').href = "/static/lightstyle.css";
+            }
+
+        } else {
+            localStorage.setItem("theme", "light");
+        }
+       })();
+    </script>
   </head>
   <body>
     <header></header>
     <main>
+      <div class="topbar-bar">
 
-      <h1>Search</h1>
-      <button onclick="toHome()"> Home </button>
+        <div style="display: flex;">
 
-      <div style="display: flex; width: 15%;"> 
+          <div style="display: flex;">
+            <img class="topbar-img" src="{{ url_for('static', filename='logo.png') }}">
+            <p id="projectTitle" class="topbar-title"> Hardware Management Tool </p>
+          </div>
 
-        <p> Name </p>
-        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="name">
+          <div style="display: flex; position: absolute; right: 0px;">
 
-        <p> SN </p>
-        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="serial_number">
+            <p class="topbar-title" style="margin-right: 25px;" id="user"> User </p>
+
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="big-box" style="height: 50px; display: flex; width: 99.2%;">
         
-        <p> Typ </p>
-        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="typ">
-        
-        <p> Zustand </p>
-        <input style="height: 50%; margin: auto; margin-right: 5%;" type="text" id="condition">
+        <button onclick="toHome()" class="normal-btn" style="width: 40px; height: 40px; margin-top: 5px;">
+          <span style="margin: auto; font-size: 15px;" class="material-icons">arrow_back</span>
+        </button>
 
-        <button onclick="search()" style="height: 50%; margin: auto; margin-right: 5%;"> Suche </button>
-        <p> Export </p>
-        <select id="export-opt" style="height: 50%; margin: auto; margin-right: 5%;">
-          <option value="null">keine</option>
-          <option value="CSV">CSV</option>
-          <option value="PDF">PDF</option>
-        </select>
+        <p class="topbar-title" style="margin: auto; font-size: 30px;"> Suche </p>
+
+      </div>
+
+      <br>
+
+      <div class="big-box" style="width: 99.2%; height: 50px;">
+
+        <div style="display: flex;"> 
+
+          <div style="display: flex; width: 100%; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto;"> Name </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-icons icons">label</span>
+            </div>
+            <input class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="text" id="name" placeholder="Name">
+          </div>
+
+          <div style="display: flex; width: 100%; margin-left: 10px; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto; white-space: nowrap"> SN </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-icons icons">fingerprint</span>
+            </div>
+            <input class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="text" id="serial_number" placeholder="Seriennummer">
+          </div>
+
+          <div style="display: flex; width: 100%; margin-left: 10px; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto; white-space: nowrap"> Gerätetyp </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-icons icons">copy_all</span>
+            </div>
+            <input list="typList" class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="text" id="typ" placeholder="Gerätetyp">
+            <datalist id="typList"> </datalist>
+          </div>
+
+          <div style="display: flex; width: 100%; margin-left: 10px; padding-top: 10px; margin-left: 10px;"> 
+            <p style="margin: auto;"> Zustand </p>
+            <div class="normal-box" style="height: 28px; width: 35px; margin: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-icons icons">shelves</span>
+            </div>
+            <input list="conditionList" class="input" style="width: 100%; margin: auto; margin-left: 5px;" type="text" id="condition" placeholder="Zustand">
+            <datalist id="conditionList">
+              <option value="Aktiv"></option>  
+              <option value="Lager"></option> 
+              <option value="Ausgeschieden"></option> 
+              <option value="Verkauft"></option>   
+            </datalist>
+          </div>
+          <button onclick="search()" id="search" class="normal-btn" style="height: 30px; display: flex; margin-top: 10px;">
+              <span style="margin-top: 1px;" class="material-icons">search</span>
+              <p style="margin-left: 5px; margin-top: auto; margin-bottom: auto;"> Suchen </p>
+            </button>
+
+            <button onclick="exportAsCSV()" class="normal-btn" style="height: 30px; display: flex; margin-top: 10px;">
+              <span style="margin-top: 1px;" class="material-icons">download</span>
+              <p style="margin-left: 5px; margin-top: auto; margin-bottom: auto;"> Export als CSV </p>
+            </button>
+          </div>
+        </div>
+      <br>
+
+      <div class="big-box" id="device_div" style="display: none; width: 99.2%;">
+        <div id="device_box" style="padding-top: 10px; width: 99.2%;"> </div>
+        <br>
+      </div>
+
+      <br>
+
+      <div id="load_more_box" style="display: none;">
+        <div class="big-box" style="width: 99.2%; height: 50px; display: flex;">
+          <button onclick="loadMore()" id="load_more" class="normal-btn" style="height: 30px; display: flex; margin-top: 10px; justify-content: center;">
+              <span style="margin-top: 1px;" class="material-icons">refresh</span>
+              <p style="margin-left: 5px; margin-top: auto; margin-bottom: auto;"> Mehr laden </p>
+            </button>
+        </div>
       </div>
     </main>
     <footer>
-       <script src="{{ url_for('static', filename='search.js') }}"></script>
+      <script src="{{ url_for('static', filename='search.js') }}"></script>
     </footer>
   </body>
 </html>

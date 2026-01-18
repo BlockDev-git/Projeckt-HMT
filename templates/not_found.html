@@ -3,30 +3,149 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+
+    <link id="theme_style" rel="stylesheet" href="{{ url_for('static', filename='darkstyle.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+
+    <script>
+      (function() {
+        var theme = localStorage.getItem("theme");
+        if (theme != null) {
+
+            if (theme == "dark") {
+                document.getElementById('theme_style').href = "/static/darkstyle.css";
+            } else if(theme == "light") {
+                document.getElementById('theme_style').href = "/static/lightstyle.css";
+            }
+
+        } else {
+            localStorage.setItem("theme", "light");
+        }
+       })();
+    </script>
   </head>
   <body>
     <header></header>
     <main>
+      <div class="topbar-bar">
 
-      <h1> Das Gesuchte Gerät / der Geräte typ konte nicht gefunden werden </h1>
-      <p> Das kann an folgende gründe ligen.</p>
-      <p> 1. Das Gerät / der Geräte typ wurde gelöscht </p>
-      <p> 2. Das Gerät / der Geräte typ wurde noch nicht angelegt </p>
+        <div style="display: flex;">
 
-      <button onclick="toHome()" id="home-btn"> Home </button>
+          <div style="display: flex;">
+            <img class="topbar-img" src="{{ url_for('static', filename='logo.png') }}">
+            <p id="projectTitle" class="topbar-title"> Hardware Management Tool </p>
+          </div>
+
+          <div style="display: flex; position: absolute; right: 0px;">
+
+            <p class="topbar-title" style="margin-right: 25px;" id="user"> User </p>
+
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="big-box" style="height: 50px; display: flex; width: 99.2%;">
+        
+        <button onclick="toHome()" class="normal-btn" style="width: 40px; height: 40px; margin-top: 5px;">
+          <span style="margin: auto; font-size: 15px;" class="material-icons">arrow_back</span>
+        </button>
+
+        <p class="title" style="margin: auto; font-size: 30px;"> Nicht gefunden </p>
+
+      </div>
+
+      <br>
+
+      <div class="big-box" style="width: 99.2%;">
+        <br>
+        <h1 style="font-size: 500%; margin: auto; text-align: center; color: #ff7d7d;"> 404 </h1>
+        <br>
+      </div>
+
+      <br>
+
+      <div class="big-box" style="width: 99.2%;">
+        
+        <br>
+        <h1 style="margin-left: 15px;"> Das Gesuchte Gerät / der Geräte typ konte nicht gefunden werden </h1>
+        <p style="margin-left: 15px;"> Das kann an folgende gründe ligen.</p>
+        <p style="margin-left: 15px;"> 1. Das Gerät / der Geräte typ wurde gelöscht </p>
+        <p style="margin-left: 15px;"> 2. Das Gerät / der Geräte typ wurde noch nicht angelegt </p>
+        <br>
+
+      </div>
 
     </main>
     <footer>
 
         <script>
+
+          window.onload = function() {
+
+            var theme = localStorage.getItem("theme");
+
+            if (theme != null) {
+
+                if (theme == "dark") {
+                    document.getElementById('theme_style').href = "/static/darkstyle.css";
+                } else if(theme == "light") {
+                    document.getElementById('theme_style').href = "/static/lightstyle.css";
+                }
+
+            } else {
+                localStorage.setItem("theme", "light");
+            }
+
+            var loginkey = sessionStorage.getItem("loginKey");
+            var currentUrl = window.location.href;
+
+            if (loginkey != null) {
+
+                var param = {
+                    key : (loginkey)
+                }
+
+                async function fetchData() {
+                    try {
+                        const response = await fetch('/check_key', {
+
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({param})
+                        });
+
+                        const data = await response.json();
+
+                        if (data == true){
+
+                            document.getElementById("user").innerHTML = "Admin";
+
+                        } else {
+                            document.getElementById("user").innerHTML = "Beobachter";
+                        }
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+                fetchData(param);
+
+            }else{
+                document.getElementById("user").innerHTML = "Beobachter";
+            }
+          }
+
           function toHome(){
             window.location.href = "/"
           }
+
         </script>
-
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
     </footer>
   </body>
 </html>

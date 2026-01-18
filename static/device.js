@@ -1,3 +1,9 @@
+// stores the attached image of the device
+
+var img_hash = "";
+
+// execute when page done loading
+
 window.onload = function() {
 
     let bar = document.getElementById('bar');
@@ -215,6 +221,7 @@ window.onload = function() {
 
                         document.getElementById('img').src = "/get_img/"+data[0][11]+"";
                         document.getElementById("img_display").style = "display: block;";
+                        img_hash = data[0][11];
 
                         async function fetchData() {
                             const img_response = await fetch('/get_img_name/' + data[0][11]);
@@ -365,6 +372,8 @@ window.onload = function() {
     fetchData()
 }
 
+// deley function
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 // back to home
@@ -457,6 +466,14 @@ function loadImgStateCreate(){
 document.getElementById('image_file').addEventListener('change', function() {
     loadImgStateCreate()
 });
+
+// remove im image
+
+function deleteImg(){
+
+    document.getElementById("img_display").style = "display: none;";
+    img_hash = "";
+}
 
 // lets you download the uploaded img
 
@@ -761,6 +778,7 @@ function updateDevice(){
         purchase : (document.getElementById('purchase').value),
         manufacturer : (document.getElementById('manufacturer').value),
         product_url : (document.getElementById('product_url').value),
+        img_hash: (img_hash),
         comment : (document.getElementById('comment').value),
     }
 

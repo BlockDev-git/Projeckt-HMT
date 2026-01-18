@@ -3,6 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link id="theme_style" rel="stylesheet" href="{{ url_for('static', filename='darkstyle.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+
+    <script>
+      (function() {
+        var theme = localStorage.getItem("theme");
+        if (theme != null) {
+
+            if (theme == "dark") {
+                document.getElementById('theme_style').href = "/static/darkstyle.css";
+            } else if(theme == "light") {
+                document.getElementById('theme_style').href = "/static/lightstyle.css";
+            }
+
+        } else {
+            localStorage.setItem("theme", "light");
+        }
+       })();
+    </script>
   </head>
   <body>
     <header></header>
@@ -32,14 +52,14 @@
           <span style="margin: auto; font-size: 15px;" class="material-icons">arrow_back</span>
         </button>
 
-        <p class="topbar-title" style="color: #000000; margin: auto; font-size: 30px;"> Geräte Typ </p>
+        <p class="topbar-title" style="margin: auto; font-size: 30px;"> Geräte Typ </p>
 
       </div>
 
       <br>
 
       <div id="infoBox" class="info-box" style="width: 99.2%; display: none;">
-        <p id="infoText" style="color: #000000; display: none;" > Typ - - - </p>
+        <p id="infoText" style="display: none;" > Typ - - - </p>
       </div>
 
       <br>
@@ -50,60 +70,69 @@
 
         <div style="display: flex; width: 98%;"> 
           <p style="margin-left: 10px;"> Name </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 2.5px; margin-top: 2px;" class="material-icons">label</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">label</span>
           </div>
           <input class="input" style="width: 100%; margin: auto;" type="text" id="name" placeholder="Name">
         </div>
 
         <div style="display: flex; width: 98%;"> 
           <p style="margin-left: 10px;"> Geräteart </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 4px; margin-top: 2px;" class="material-icons">computer</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">computer</span>
           </div>
           <input class="input" style="width: 100%; margin: auto;" type="text" id="device_type" placeholder="Geräteart">
         </div>
 
         <div style="display: flex; width: 98%;"> 
           <p style="margin-left: 10px; white-space: nowrap;"> Garantie in Monate </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 4px; margin-top: 2px;" class="material-icons">calendar_month</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">calendar_month</span>
           </div>
-          <input class="input" style="width: 100%; margin: auto;" type="number" id="warranty" placeholder="Garantie">
+           <div class="custom-number-input">
+            <input class="input" type="number" value="0" style="width: 100%; margin: auto;" id="warranty" placeholder="Garantie">
+            <div class="spin-buttons">
+              <span class="material-icons up" onclick="stepUp()">expand_less</span>
+              <span class="material-icons down" onclick="stepDown()">expand_more</span>
+            </div>
+          </div>
         </div>
 
         <div style="display: flex; width: 98%;"> 
           <p style="margin-left: 10px;"> Hersteller </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 4px; margin-top: 2px;" class="material-icons">factory</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">factory</span>
           </div>
           <input class="input" style="width: 100%; margin: auto;" type="text" id="manufacturer" placeholder="Hersteller">
         </div>
 
         <div style="display: flex; width: 98%;"> 
           <p style="margin-left: 10px;"> Produkt </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 4px; margin-top: 2px;" class="material-icons">pallet</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">pallet</span>
           </div>
           <input class="input" style="width: 100%; margin: auto;" type="text" id="product_url" placeholder="Produkt URL">
         </div>
 
         <div style="display: flex; width: 98%;">
           <p style="margin-left: 10px;"> Bild </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 1px; margin-top: 2px;" class="material-icons">image</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">image</span>
           </div>
 
-          <input class="input" style="width: 100%; margin-top: 10px;" type="file" id="image_file" accept="image/*" placeholder="Bild">
+          <input class="input" style="width: 100%; margin-top: 12px;" type="file" id="image_file" accept="image/*" placeholder="Bild">
 
           <div id="img_display" style="display: none;">
-            <div class="big-box" style="width: 200px; height: 200px; margin-left: 50px;">
-              <img id="img" style="height: 90%; width: 90%; display: block; margin: auto; padding-top: 10px; border-radius: 7px;" src="{{ url_for('static', filename='image_arrow_up.png') }}">
+            <div class="big-box" style="width: 250px; height: 250px; margin-left: 50px;">
+              <img id="img" style="height: 90%; width: 90%; display: block; margin: auto; padding-top: 10px; border-radius: 7px;">
             </div>
 
-            <div class="big-box" style="height: 50px; width: 200px; margin-left: 50px; margin-top: 5px; display: flex;">
-              <button onclick="downloadImg()" class="normal-btn" style="width: 40px; height: 40px; margin-top: 5px;">
-                <span style="margin: auto; font-size: 15px;" class="material-icons">download</span>
+            <div class="big-box" style="height: 50px; width: 250px; margin-left: 50px; margin-top: 5px; display: flex;">
+              <button onclick="downloadImg()" class="normal-btn" style="width: 40px; height: 40px; margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+                <span class="material-icons">download</span>
+              </button>
+              <button onclick="deleteImg()" class="normal-btn" style="width: 40px; height: 40px; margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+                <span class="material-icons">delete</span>
               </button>
               <p id="img_name" style="margin: auto;"> - - - </p>
             </div>
@@ -114,8 +143,8 @@
 
         <div style="display: flex; width: 98%;"> 
           <p style="margin-left: 10px;"> Kommentar </p>
-          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-            <span style="margin-left: 4px; margin-top: 2px;" class="material-icons">comment</span>
+          <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons icons">comment</span>
           </div>
           <input class="input" style="width: 100%; margin: auto; height: 100px;" type="text" id="comment" placeholder="Kommentar">
         </div>
@@ -136,8 +165,6 @@
     </main>
     <footer>
       <script src="{{ url_for('static', filename='typ.js') }}"></script>
-      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </footer>
   </body>
 </html>

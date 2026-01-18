@@ -3,6 +3,27 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+
+    <link id="theme_style" rel="stylesheet" href="{{ url_for('static', filename='darkstyle.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+
+    <script>
+      (function() {
+        var theme = localStorage.getItem("theme");
+        if (theme != null) {
+
+            if (theme == "dark") {
+                document.getElementById('theme_style').href = "/static/darkstyle.css";
+            } else if(theme == "light") {
+                document.getElementById('theme_style').href = "/static/lightstyle.css";
+            }
+
+        } else {
+            localStorage.setItem("theme", "light");
+        }
+       })();
+    </script>
   </head>
   <body>
     <header></header>
@@ -41,12 +62,12 @@
         <div style="display: flex;">
           <h2 style="font-family: Arial, Helvetica, sans-serif; text-align: center;">Anmelden</h2>
           <button onclick="closeToLogin()" class="normal-btn" style="margin-left: 50%; margin-top: 6.5%; width: 28px; height: 28px;">
-            <span style="margin: auto; font-size: 15px;" class="material-icons">close</span>
+            <span style="margin: auto; font-size: 15px;" class="material-icons icons">close</span>
         </div>
         <div>
           <div style="display: flex; width: 98%;"> 
             <div class="normal-box" style="height: 28px; width: 35px;">
-              <span style="margin-left: 2.5px;" class="material-icons">key</span>
+              <span style="margin-left: 2.5px;" class="material-icons icons">key</span>
             </div>
             <input class="input" style="width: 100%; margin: auto;" type="password" id="loginInput" placeholder="Password">
           </div>
@@ -57,7 +78,7 @@
           <br>
           <div>
             <div id="infoBoxLogin" class="info-box" style="display: none;">
-              <p id="infoTextLogin" style="color: #000000; display: none;"> Anmeldung - - - </p>
+              <p id="infoTextLogin" style="display: none;"> Anmeldung - - - </p>
             </div>
           </div>
         </div>
@@ -66,7 +87,7 @@
       <!-- Change PW Popup -->
 
       <div class="overlay" id="pwOverlay"> </div>
-      <div class="popup" id="pwPopup">
+      <div class="popup" id="pwPopup" style="height: 400px;">
         <div style="display: flex;">
           <h2 style="font-family: Arial, Helvetica, sans-serif;">Passwort ändern</h2>
           <button onclick="closeToChangePW()" class="normal-btn" style="margin-left: 50%; margin-top: 6.5%; width: 28px; height: 28px;">
@@ -76,21 +97,21 @@
         <div>
           <div style="display: flex; width: 98%;"> 
             <div class="normal-box" style="height: 28px; width: 35px;">
-              <span style="margin-left: 2.5px;" class="material-icons">key</span>
+              <span style="margin-left: 2.5px;" class="material-icons icons">key</span>
             </div>
             <input class="input" style="width: 100%; margin: auto;" type="password" id="currentPasswort" placeholder="Altes Password">
           </div>
           <br>
           <div style="display: flex; width: 98%;"> 
             <div class="normal-box" style="height: 28px; width: 35px;">
-              <span style="margin-left: 2.5px;" class="material-icons">key</span>
+              <span style="margin-left: 2.5px;" class="material-icons icons">key</span>
             </div>
             <input class="input" style="width: 100%; margin: auto;" type="password" id="newPasswort" placeholder="Neues Password">
           </div>
           <br>
           <div style="display: flex; width: 98%;"> 
             <div class="normal-box" style="height: 28px; width: 35px;">
-              <span style="margin-left: 2.5px;" class="material-icons">key</span>
+              <span style="margin-left: 2.5px;" class="material-icons icons">key</span>
             </div>
             <input class="input" style="width: 100%; margin: auto;" type="password" id="repeatPasswort" placeholder="Password wiederholen">
           </div>
@@ -101,7 +122,7 @@
           <br>
           <div>
             <div id="infoBoxChangePW" class="info-box" style="display: none;">
-              <p id="infoTextChangePW" style="color: #000000; display: none;"> Änderung - - - </p>
+              <p id="infoTextChangePW" style="display: none;"> Änderung - - - </p>
             </div>
           </div>
         </div>
@@ -114,13 +135,13 @@
         <div style="display: flex;">
           <h2 style="font-family: Arial, Helvetica, sans-serif; text-align: center;">Einstellungen</h2>
           <button onclick="closeToChangeSettings()" class="normal-btn" style="margin-left: 37%; margin-top: 6.5%; width: 28px; height: 28px;">
-            <span style="margin: auto; font-size: 15px;" class="material-icons">close</span>
+            <span style="margin: auto; font-size: 15px;" class="material-icons icons">close</span>
         </div>
         <div>
           <div style="display: flex; width: 98%;"> 
             <p style="white-space: nowrap;"> Aussehen </p>
             <div class="normal-box" style="height: 28px; width: 35px; margin-top: 10px;">
-              <span style="margin-left: 1px; margin-top: 2px;" class="material-icons">key</span>
+              <span style="margin-left: 1px; margin-top: 2px;" class="material-icons icons">sunny</span>
             </div>
             <select id="theme" class="input" style="width: 100%; height: 30px; margin: auto;">
               <option value="light">Hell</option>
@@ -175,18 +196,21 @@
       <div style="display: flex;">
         <div class="big-box">
           <p style="font-size: 25px; text-align: center;"> Geräte in Zustand </p>
-          <canvas id="statusChart"></canvas>
+          <div style="width: 100%; height: 400px;">
+            <canvas id="statusChart" width="400" height="400"></canvas>
+          </div>
+          <br>
         </div>
 
         <div class="big-box">
           <p style="font-size: 25px;; text-align: center;"> Inventarisierte Geräte </p>
           <div style="display: flex;">
             
-            <div style="background-color: #F5F5F5; width: 90%; height: 60px; width: 60px; border-radius: 7px; margin-left: 25px;">
-              <span style="padding-top: 12px; color: #000000; margin-left: 15.5px; margin-top: 5px;" class="material-icons">computer</span>
+            <div class="small-box">
+              <span style="padding-top: 12px; margin-left: 15.5px; margin-top: 5px;" class="material-icons icons">computer</span>
             </div>
 
-            <div style="background-color: #F5F5F5; width: 90%; height: 60px; border-radius: 7px; margin-left: 25px; margin-right: 25px;">
+            <div class="small-box" style="width: 90%; height: 60px; margin-left: 25px; margin-right: 25px;">
               <p id="totalDevices" style="font-size: 20px; text-align: center;"> - - - </p>
             </div>
 
@@ -197,9 +221,7 @@
     </main>
     <footer>
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <script src="{{ url_for('static', filename='script.js') }}"></script>
-      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <script src="{{ url_for('static', filename='index.js') }}"></script>
     </footer>
   </body>
 </html>

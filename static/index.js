@@ -1,6 +1,29 @@
+// this is for changing the theme (dark mode / light mode)
+
+function changeTheme() {
+
+    var theme = localStorage.getItem("theme");
+
+    if (theme != null) {
+
+        if (theme == "dark") {
+            document.getElementById('theme_style').href = "/static/darkstyle.css";
+        } else if(theme == "light") {
+            document.getElementById('theme_style').href = "/static/lightstyle.css";
+        }
+
+    } else {
+         localStorage.setItem("theme", "light");
+    }
+}
+
+// execute when page done loading
+
 window.onload = function() {
 
     window.addEventListener('resize', handleResize);
+
+    // display "Admin" or "Beobachter" and available options
     var loginkey = sessionStorage.getItem("loginKey");
 
     if (loginkey != null) {
@@ -21,7 +44,6 @@ window.onload = function() {
                 });
 
                 const data = await response.json();
-                console.log(data)
 
                 if (data == true) {
 
@@ -64,7 +86,7 @@ window.onload = function() {
         document.getElementById("device-btn").style.display = "none";
         document.getElementById("log-btn").style.display = "none";
     }
-
+    
     // ---------- Load Charts ----------
 
     async function loadChart() {
@@ -72,54 +94,79 @@ window.onload = function() {
         const stats = await response.json();
 
         const labels = Object.keys(stats);
-        const data = Object.values(stats);
-        const total = data.reduce((a, b) => a + b, 0);
+        const chartData = Object.values(stats);
+        const total = chartData.reduce((a, b) => a + b, 0);
 
         document.getElementById("totalDevices").innerText = total;
 
-        const colors = [
-        "#A5E1CD", "#FF7D7D", "#CFC4FF", "#FFD579",
-        ];
+        const colorMapping = {
+            "Aktiv": "#A5E1CD",
+            "Lager": "#CFC4FF",
+            "Ausgeschieden": "#FF7D7D",
+            "Verkauft": "#FFD579"
+        };
+        const backgroundColors = labels.map(label => colorMapping[label] || "#ffffff");
 
-        new Chart(document.getElementById("statusChart"), {
-        type: "pie",
-        data: {
-            labels: labels,
-            datasets: [{
-            Chartsdata: data,
-            backgroundColor: colors.slice(0, labels.length)
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-            legend: {
-                position: "bottom",
-                labels: {
-                generateLabels: function(chart) {
-                    const dataset = chart.data.datasets[0];
-                    return chart.data.labels.map((label, i) => {
-                    const value = dataset.data[i];
-                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                    return {
-                        text: `${label} (${percentage}%)`,
-                        fillStyle: dataset.backgroundColor[i],
-                        strokeStyle: dataset.backgroundColor[i],
-                        lineWidth: 1,
-                        hidden: false,
-                        index: i
-                    };
-                    });
-                }
-                }
-            },
-            }
+        const ctx = document.getElementById("statusChart");
+
+        // Clear the previous chart instance if it exists
+        const existingChart = Chart.getChart(ctx);
+        if (existingChart) {
+            existingChart.destroy();
         }
+
+        var theme = localStorage.getItem("theme");
+        var labelColor = "#ffffff";
+
+        if (theme == "dark") {
+            labelColor = "#ffffff";                                  
+        } else if(theme == "light") {
+            labelColor = "#000000";
+        }
+
+        // Create a new chart instance
+        new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: backgroundColors
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            generateLabels: function(chart) {
+                                const dataset = chart.data.datasets[0];
+                                return chart.data.labels.map((label, i) => {
+                                    const value = dataset.data[i];
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return {
+                                        text: `${label}: ${value} (${percentage}%)`,
+                                        fillStyle: dataset.backgroundColor[i],
+                                        strokeStyle: dataset.backgroundColor[i],
+                                        lineWidth: 1,
+                                        index: i,
+                                        fontColor: labelColor
+                                    };
+                                });
+                            }
+                        }
+                    },
+                }
+            }
         });
     }
 
     loadChart();
 }
+
+// When the size of the page is to small the title changes to "HMT"
 
 function handleResize() {
     if (window.innerWidth < 500) {
@@ -131,23 +178,35 @@ function handleResize() {
 
 handleResize();
 
+// deley function
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
+
+// sends you to "/log" page
 
 function toLog(){
     window.location.href = "/log";
 }
 
+// sends you to "/search" page
+
 function toSearch(){
     window.location.href = "/search";
 }
+
+// sends you to "/creat_device" page
 
 function toDevice(){
     window.location.href = "/creat_device"
 }
 
+// sends you to "/creat_type" page
+
 function toType(){
     window.location.href = "/creat_type"
 }
+
+// sends you to "/" page
 
 function toHome(){
     window.location.href = "/"
@@ -204,13 +263,7 @@ function toChangeSettings() {
 
     document.getElementById("settingsPopup").style.display = "block";
     document.getElementById("settingsOverlay").style.display = "block";
-
-    // document.getElementById("infoBoxChangePW").style.display = "none";
-    // document.getElementById("infoTextChangePW").style.display = "none";
-
-    // document.getElementById("currentPasswort").value = "";
-    // document.getElementById("repeatPasswort").value = "";
-    // document.getElementById("newPasswort").value = "";
+    document.getElementById("theme").value = ""+localStorage.getItem("theme")+"";
 }
 
 function closeToChangeSettings() {
@@ -346,7 +399,7 @@ function changePw(){
 
                                 document.getElementById("infoBoxChangePW").style.display = "block"
                                 document.getElementById("infoTextChangePW").style.display = "block"
-                            }
+                            }body
 
                         } catch (error) {
                             console.error('Error:', error);
@@ -426,11 +479,8 @@ function logout(){
     fetchData(param);
 }
 
-async function changeSettings(){
+function changeSettings(){
 
-    let theme = document.getElementById("theme").value;
-    console.log(theme);
-
-    await delay(1000);
-    toHome();
+    localStorage.setItem("theme", ""+document.getElementById("theme").value+"");
+    window.location.reload();
 }

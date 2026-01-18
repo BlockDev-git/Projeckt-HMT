@@ -1,3 +1,9 @@
+// stores the attached image of the typ
+
+var img_hash = "";
+
+// execute when page done loading
+
 window.onload = function() {
 
     let bar = document.getElementById('bar');
@@ -172,6 +178,7 @@ window.onload = function() {
 
                         document.getElementById('img').src = "/get_img/"+data[0][6]+"";
                         document.getElementById("img_display").style = "display: block;";
+                        img_hash = data[0][6];
 
                         async function fetchData() {
                             const img_response = await fetch('/get_img_name/' + data[0][6]);
@@ -290,9 +297,11 @@ window.onload = function() {
     }
 }
 
+// deley function
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-// back to home
+// sends you to "/" page
 
 function toHome(){
     window.location.href = "/"
@@ -352,6 +361,14 @@ function downloadImg(){
     document.body.removeChild(link);
 }
 
+// remove im image
+
+function deleteImg(){
+
+    document.getElementById("img_display").style = "display: none;";
+    img_hash = "";
+}
+
 // for showing success, warning and error notification
 
 function showInfoBox(typ, text){
@@ -370,6 +387,18 @@ function showInfoBox(typ, text){
 
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+
+// this is for the custom Number up button
+
+function stepUp() {
+  document.getElementById('warranty').stepUp();
+}
+
+// this is for the custom Number down button
+
+function stepDown() {
+  document.getElementById('warranty').stepDown();
 }
 
 // this is for creating a new typ
@@ -506,6 +535,7 @@ function updateType(){
         warranty : (document.getElementById('warranty').value),
         manufacturer : (document.getElementById('manufacturer').value),
         product_url : (document.getElementById('product_url').value),
+        img_hash: (img_hash),
         comment : (document.getElementById('comment').value),
     }
 

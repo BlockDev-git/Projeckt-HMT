@@ -1,4 +1,4 @@
-from flask import Flask, render_template ,jsonify ,request, send_file, Response
+from flask import Flask, render_template ,jsonify ,request, send_file
 from flask_apscheduler import APScheduler
 from datetime import datetime, timedelta
 import sqlite3
@@ -273,16 +273,19 @@ def delete_type():
         connection = sqlite3.connect("Database.db")
         cursor = connection.cursor()
 
-        img_not_in_use("typ", id)
+        cursor.execute("SELECT img_hash FROM device_typ WHERE id=:id",{"id": str(id)})
+        current_img_hash = cursor.fetchall()
 
         cursor.execute("SELECT name FROM device_typ WHERE id=:id",{"id": str(id)})
         name = cursor.fetchall()
 
         cursor.execute("DELETE FROM device_typ WHERE id=:id",{"id": str(id)})
         cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(name[0][0]), "Typ Gelöscht", "Der Typ: "+str(name[0][0])+" wurde gelöscht"])
-        
+
         connection.commit()
         connection.close()
+
+        img_not_in_use(current_img_hash)
 
         return jsonify(True, "success")
     else:
@@ -314,13 +317,17 @@ def update_type():
             manufacturer = data['param']['manufacturer']
             product_url = data['param']['product_url']
             comment = data['param']['comment']
+            img_hash = data['param']['img_hash']
 
-            img_not_in_use("typ", id)
+            cursor.execute("SELECT img_hash FROM device_typ WHERE id=:id",{"id": str(id)})
+            current_img_hash = cursor.fetchall()
 
-            cursor.execute("UPDATE device_typ SET name=:name, device_type=:device_type, warranty=:warranty, manufacturer=:manufacturer, product_url=:product_url, img_hash=:img_hash, comment=:comment WHERE id=:id", {"id": id, "name": name, "device_type": device_type, "warranty": warranty, "manufacturer": manufacturer, "product_url": product_url, "img_hash": "", "comment": comment})
+            cursor.execute("UPDATE device_typ SET name=:name, device_type=:device_type, warranty=:warranty, manufacturer=:manufacturer, product_url=:product_url, img_hash=:img_hash, comment=:comment WHERE id=:id", {"id": id, "name": name, "device_type": device_type, "warranty": warranty, "manufacturer": manufacturer, "product_url": product_url, "img_hash": img_hash, "comment": comment})
             cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(name), "Typ Aktualisiert", "Der Typ: "+str(name)+" wurde aktualisiert"])
             connection.commit()
             connection.close()
+
+            img_not_in_use(current_img_hash)
 
             return jsonify(True, "success")
 
@@ -406,7 +413,8 @@ def delete_device():
         connection = sqlite3.connect("Database.db")
         cursor = connection.cursor()
 
-        img_not_in_use("device", id)
+        cursor.execute("SELECT img_hash FROM device WHERE id=:id",{"id": str(id)})
+        current_img_hash = cursor.fetchall()
 
         cursor.execute("SELECT serial_number FROM device WHERE id=:id",{"id": str(id)})
         sn = cursor.fetchall()
@@ -416,6 +424,8 @@ def delete_device():
         
         connection.commit()
         connection.close()
+
+        img_not_in_use(current_img_hash)
 
         return jsonify(True, "success")
     else:
@@ -451,15 +461,22 @@ def update_device():
             purchase = data['param']['purchase']
             manufacturer = data['param']['manufacturer']
             product_url = data['param']['product_url']
+            img_hash = data['param']['img_hash']
             comment = data['param']['comment']
 
             connection = sqlite3.connect("Database.db")
             cursor = connection.cursor()
 
-            cursor.execute("UPDATE device SET typ=:typ, name=:name, device_type=:device_type, serial_number=:serial_number, condition=:condition, location=:location, warranty=:warranty, purchase=:purchase, manufacturer=:manufacturer, product_url=:product_url, img_hash=:img_hash, comment=:comment WHERE id=:id", {"id": id, "typ": typ , "name": name, "device_type": device_type, "serial_number": serial_number, "condition": condition, "location": location, "warranty": warranty, "purchase": purchase, "manufacturer": manufacturer, "product_url": product_url, "img_hash": "", "comment": comment})
+            cursor.execute("SELECT img_hash FROM device WHERE id=:id",{"id": str(id)})
+            current_img_hash = cursor.fetchall()
+
+            cursor.execute("UPDATE device SET typ=:typ, name=:name, device_type=:device_type, serial_number=:serial_number, condition=:condition, location=:location, warranty=:warranty, purchase=:purchase, manufacturer=:manufacturer, product_url=:product_url, img_hash=:img_hash, comment=:comment WHERE id=:id", {"id": id, "typ": typ , "name": name, "device_type": device_type, "serial_number": serial_number, "condition": condition, "location": location, "warranty": warranty, "purchase": purchase, "manufacturer": manufacturer, "product_url": product_url, "img_hash": img_hash, "comment": comment})
             cursor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", [str(request.remote_addr), str(serial_number), "Gerät Aktualisiert", "Das Gerät: "+str(serial_number)+" wurde aktualisiert"])
+            
             connection.commit()
             connection.close()
+
+            img_not_in_use(current_img_hash)
 
             return jsonify(True, "success")
 
@@ -472,19 +489,20 @@ def update_device():
 
 # get all devices where "name" , "serial_number" , "typ" and "condition" match
 
-@app.route('/search_device', methods=['POST'])
-def search_device():
+@app.route('/get_next_devices', methods=['POST'])
+def get_next_devices():
 
     data = request.json
     name = data['param']['name']
     serial_number = data['param']['serial_number']
     typ = data['param']['typ']
     condition = data['param']['condition']
+    next = data['param']['next']
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM device WHERE name LIKE :name AND serial_number LIKE :serial_number AND typ LIKE :typ AND condition LIKE :condition", {"name": '%'+str(name)+'%', "typ": '%'+str(typ)+'%', "serial_number": '%'+str(serial_number)+'%', "condition": '%'+str(condition)+'%'})
+    cursor.execute("SELECT * FROM device WHERE name LIKE :name AND serial_number LIKE :serial_number AND typ LIKE :typ AND condition LIKE :condition ORDER BY created_at DESC LIMIT 10 OFFSET :next", {"name": '%'+str(name)+'%', "typ": '%'+str(typ)+'%', "serial_number": '%'+str(serial_number)+'%', "condition": '%'+str(condition)+'%', "next": int(next)})
     devices = cursor.fetchall()
     connection.commit()
     connection.close()
@@ -551,21 +569,10 @@ def expiration_log_task():
 
 # this deletes not used img
 
-def img_not_in_use(table, id):
+def img_not_in_use(img_hash):
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
-    img_hash = None
-
-    if table == "typ":
-
-        cursor.execute("SELECT img_hash FROM device_typ WHERE id=:id",{"id": str(id)})
-        img_hash = cursor.fetchall()
-        
-    elif table == "device":
-
-        cursor.execute("SELECT img_hash FROM device WHERE id=:id",{"id": str(id)})
-        img_hash = cursor.fetchall()
 
     if img_hash[0][0] != "":
 
@@ -575,7 +582,7 @@ def img_not_in_use(table, id):
         cursor.execute("SELECT COUNT(id) FROM device WHERE img_hash=:img_hash",{"img_hash": str(img_hash[0][0])})
         img_count_device = cursor.fetchall()
 
-        if (img_count_device[0][0] + img_count_typ[0][0]) == 1:
+        if (img_count_device[0][0] + img_count_typ[0][0]) == 0:
 
             cursor.execute("DELETE FROM images WHERE img_hash=:img_hash",{"img_hash": str(img_hash[0][0])})
             connection.commit()
@@ -600,7 +607,6 @@ def upload_file():
 
     id = request.form.get('id')
     table = request.form.get('table')
-    update = request.form.get('update')
 
     if 'image' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
@@ -609,7 +615,21 @@ def upload_file():
     if file.filename == '':
         return jsonify({"error": "No file selected"}), 400
     
-    img_not_in_use(table, id)
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+    current_img_hash = None
+
+    if table == "typ":
+
+        cursor.execute("SELECT img_hash FROM device_typ WHERE id=:id",{"id": str(id)})
+        current_img_hash = cursor.fetchall()
+
+    elif table == "device":
+
+        cursor.execute("SELECT img_hash FROM device WHERE id=:id",{"id": str(id)})
+        current_img_hash = cursor.fetchall()
+
+    img_not_in_use(current_img_hash)
 
     try:
         img = Image.open(file.stream)
@@ -624,9 +644,6 @@ def upload_file():
         compressed_data = buffer.getvalue()
 
         file_hash = hashlib.md5(compressed_data).hexdigest()
-
-        connection = sqlite3.connect("Database.db")
-        cursor = connection.cursor()
 
         cursor.execute("SELECT img_hash FROM images WHERE img_hash=:img_hash",{"img_hash": str(file_hash)})
         item = cursor.fetchall()
@@ -753,7 +770,7 @@ def generate_qr():
 
 @app.route('/device_status_stats', methods=['GET'])
 def device_status_stats():
-    ALL_STATUS = ["Aktiv", "Lager", "Defekt", "In Reparatur"]
+    ALL_STATUS = ["Aktiv", "Lager", "Ausgeschieden", "Verkauft"]
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()

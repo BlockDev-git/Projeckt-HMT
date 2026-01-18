@@ -1,0 +1,355 @@
+/* --- --- Page --- --- */
+
+body{
+    background-color: #262626;
+}
+
+/* --- --- Links --- --- */
+
+.link{
+    color: #ccc3ff;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+    height: 25px;
+    border-radius: 7px;
+    border-color: #333333;
+    border-width: 2px;
+    border-style: solid;
+    background-color: #3B3B3B;
+}
+
+/* --- --- Icons --- --- */
+
+.icons{
+    color: white;
+}
+
+/* --- --- Pie Chart --- --- */
+
+canvas { 
+
+    max-width: 500px; 
+    margin: 20px auto; 
+    display: block; 
+}
+
+/* --- --- Text Input --- --- */
+
+.input{
+
+   height: 25px;
+   border-radius: 7px;
+   border-color: #333333;
+   border-width: 2px;
+   border-style: solid;
+   background-color: #3B3B3B;
+   color: white;
+}
+
+/* --- --- Topbar --- --- */
+
+.topbar-bar {
+    background-color: #303030;
+    overflow: hidden;
+    border-radius: 7px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.topbar-img {
+    width: 100%; 
+    max-width: 50px; 
+    max-height: 50px; 
+    height: auto; 
+    margin-top: auto; 
+    margin-bottom: auto; 
+    padding-left: 5px;
+}
+
+/* --- --- Dropdown --- --- */
+
+.dropdown {
+    position: relative;
+    margin-right: 14px;
+}
+
+.options {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #262626;
+    border: 1px solid #1F1F1F;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    z-index: 1;
+}
+
+.option {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+.option:hover {
+    background-color: #1F1F1F; 
+}
+
+/* --- --- Popup --- --- */
+
+.popup {
+
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 225px;
+    background-color: #262626;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.overlay {
+
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* --- --- Button --- --- */
+
+.round-button {
+    background-color: #1E1E1E;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+
+    margin-top: auto; 
+    margin-bottom: auto;
+    margin-right: 14px;
+}
+
+.round-button:hover {
+    background-color: #131313;
+}
+
+.round-button:active {
+    transform: scale(0.9);
+}
+
+.big-btn{
+
+    background-color: #303030;
+    width: 100%;
+    height: auto;
+    border-radius: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.big-btn:hover {
+    background-color: #282828;
+}
+
+.big-btn:active {
+    transform: scale(0.9);
+}
+
+.normal-btn{
+
+    background-color: #2B2B2B;
+    width: 100%;
+    height: auto;
+    border-radius: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-color: #1F1F1F;
+    border-width: 2px;
+    border-style: solid;
+    color: white;
+}
+
+.normal-btn:hover {
+    background-color: #222222;
+}
+
+.normal-btn:active {
+    transform: scale(0.9);
+}
+
+
+
+/* --- --- Text/Title --- --- */
+
+.topbar-title {
+    font-family: Arial, Helvetica, sans-serif; 
+    color: white; 
+    font-size: large; 
+    padding-left: 5px;
+}
+
+.title {
+    font-family: Arial, Helvetica, sans-serif; 
+    color: white; 
+    font-size: large; 
+    padding-left: 5px;
+}
+
+h1 {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h2 {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+/* --- --- Boxes --- --- */
+
+.info-box{
+
+    background-color: #333333;
+    border-radius: 7px;
+    text-align: center;
+    border-color:#a5e1cd;
+    border-width: 2px;
+    border-style: solid;
+    width: 95%;
+    margin: auto;
+}
+
+.big-box{
+
+    background-color: #303030;
+    width: 100%;
+    height: auto;
+    border-radius: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.normal-box{
+
+    background-color: #2B2B2B;
+    width: 100%;
+    height: auto;
+    border-radius: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-color: #1F1F1F;
+    border-width: 2px;
+    border-style: solid
+}
+
+.small-box{
+
+    background-color: #2B2B2B;
+    width: 90%;
+    height: 60px;
+    width: 60px;
+    border-radius: 7px;
+    margin-left: 25px;
+}
+
+/* --- --- File input --- --- */
+
+input[type="file"]::file-selector-button {
+
+    background-color: #2B2B2B;
+    height: auto;
+    border-radius: 7px;
+    border-color: #1F1F1F;
+    border-width: 2px;
+    border-style: solid;
+    color: white;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #222222;
+}
+
+/* --- --- Nummber input --- --- */
+
+/* Hide Native arrow */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.custom-number-input {
+
+    display: flex;
+    align-items: center;
+    height: 25px;
+    border-radius: 7px;
+    border-color: #333333;
+    border-width: 2px;
+    border-style: solid;
+    background-color: #3B3B3B;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.custom-number-input input {
+  background: transparent !important;
+  border: none !important;
+  color: white;
+  outline: none;
+}
+
+.spin-buttons {
+  display: flex;
+  flex-direction: column;
+  color: #888;
+}
+
+.spin-buttons .material-icons {
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.spin-buttons .material-icons:hover {
+  color: white;
+}
