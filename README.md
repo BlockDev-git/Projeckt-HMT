@@ -28,18 +28,15 @@ Bevor du „app.py“ ausführst, müssen folgende Python-Pakete installiert sei
 
 Um nun die „app.py“ muss folgender Befehl ausgeführt werden:
 
-#### Windows:
-
+#### Windows 🪟
 ```
 python app.py oder py app.py
 ```
-
-#### Linux:
+#### Linux 🐧
 ```
 python3 app.py
 ```
-
-#### Mac OS:
+#### Mac OS 🍏
 ```
 python3 app.py
 ```
@@ -54,3 +51,8 @@ Press CTRL+C to quit
   Debugger PIN: 117-034-467
 ```
 Nun sollte in dem Ordner, wo auch das Python-Script „app.py“ sich befindet, eine Datenbank existieren.
+
+### Nutzung 🛠️
+Sobald du nun die Anwendung im Browser öffnest, wirst du bemerken, dass wenige Funktionen angezeigt werden. Das liegt daran, dass du als Beobachter angemeldet bist. Um mehrere Funktionen freizuschalten, musst du dich zuerst anmelden. Das geht, indem du auf das Benutzer-Icon oben rechts klickst Melde dich nun als Admin an. Das Passwort dafür ist `4admin`. Das sollte so schnell wie möglich geändert werden. Dafür muss die Option „Passwort ändern“ angeklickt werden. Nun solltest du als Admin mehr Funktionen freigeschaltet haben.
+
+
