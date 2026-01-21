@@ -1,0 +1,3 @@
+## Hallo Schön, dass du hier bist.
+### Was ist HMT (Hardware Management Tool)?
+HMT hilft dir, den Überblick über deine Hardware zu verschaffen. Da weißt ,du nun wo deine Hardware sich aktuell befindet. HMT bietet eine übersichtliche und leicht bedienbare Benutzeroberfläche. In der Oberfläche können ganz leicht Typen (Schablonen) und Geräte angelegt werden. Die angelegten Geräte können daraufhin wieder angezeigt werden und als CSV exportiert werden. Um Geräte einfacher suchen zu können, kann für jedes Gerät ein QR-Code generiert werden. Dies erleichtert die Suche ungemein. Dies ist nur der Anfang HMT bietet noch viele andere Funktionen.
