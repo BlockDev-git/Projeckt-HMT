@@ -15,7 +15,7 @@ HMT verwendet im Backend Python als Scriptsprache Für den Server wird Flask ver
 ### Installation von HMT 💾
 Bevor du „app.py“ ausführst, müssen folgende Python-Pakete installiert sein.
 
-* lask
+* flask
 * flask_apscheduler
 * datetime
 * sqlite3
