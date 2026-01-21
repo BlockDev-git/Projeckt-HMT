@@ -325,13 +325,6 @@ function loadMore(){
 // this lets you export all logs in a CSV file
 
 function exportAsCSV() {
-
-    var param = {
-        time : (""),
-        ip : (""),
-        object : (""),
-        action : ("")
-    }
     
     async function fetchData() {
         try {
@@ -341,7 +334,6 @@ function exportAsCSV() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({param})
             });
 
             const data = await response.json();
@@ -370,7 +362,7 @@ function exportAsCSV() {
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
-                link.setAttribute('download', "log "+today+".csv");
+                link.setAttribute('download', "Log "+today+".csv");
 
                 document.body.appendChild(link);
                 link.click();

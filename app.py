@@ -487,7 +487,7 @@ def update_device():
 
 # ---------------- Search ----------------
 
-# get all devices where "name" , "serial_number" , "typ" and "condition" match
+# get next 10 devices where "name" , "serial_number" , "typ" and "condition" match
 
 @app.route('/get_next_devices', methods=['POST'])
 def get_next_devices():
@@ -509,27 +509,37 @@ def get_next_devices():
 
     return jsonify(devices)
 
-# ---------------- LOG ----------------
+# get all devices
 
-# get all devices where "name" , "serial_number" , "typ" and "condition" match
-
-@app.route('/get_all_logs', methods=['POST'])
-def get_all_logs():
-
-    data = request.json
-    time = data['param']['time']
-    object = data['param']['object']
-    action = data['param']['action']
-    ip = data['param']['ip']
+@app.route('/get_all_devices', methods=['POST'])
+def get_all_devices():
 
     connection = sqlite3.connect("Database.db")
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM log WHERE created_at LIKE :time AND ip LIKE :ip AND object LIKE :object AND action LIKE :action ORDER BY created_at DESC", {"time": '%'+str(time)+'%', "ip": '%'+str(ip)+'%', "object": '%'+str(object)+'%', "action": '%'+str(action)+'%'})
+    cursor.execute("SELECT id, created_at, name, device_type, serial_number, condition, location, warranty, purchase, manufacturer, product_url, comment FROM device ORDER BY created_at DESC")
+    devices = cursor.fetchall()
+    connection.close()
+
+    return jsonify(devices)
+
+# ---------------- LOG ----------------
+
+# get all logs
+
+@app.route('/get_all_logs', methods=['POST'])
+def get_all_logs():
+
+    connection = sqlite3.connect("Database.db")
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM log ORDER BY created_at DESC")
     logs = cursor.fetchall()
     connection.close()
 
     return jsonify(logs)
+
+# get the next 10 logs where "name" , "serial_number" , "typ" and "condition" match
 
 @app.route('/get_next_logs', methods=['POST'])
 def get_next_logs():

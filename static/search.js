@@ -334,3 +334,60 @@ function typLink(type){
     }
     fetchData()
 }
+
+// this lets you export all devices in a CSV file
+
+function exportAsCSV() {
+    
+    async function fetchData() {
+        try {
+            const response = await fetch('/get_all_devices', {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const data = await response.json();
+
+            if (data != null) {
+
+                function arrayToCSV(data) {
+                    const headers = ["ID", "Datum", "Name", "Geräteart", "Seriennummer", "Zustand", "Standort", "Garantie in Monaten", "Kaufdatum", "Hersteller", "Produktlink", "Kommentar"];
+                    const rows = data.map(row => 
+                        row.map(item => `"${item}"`).join(',')
+                    );
+
+                    return [headers.join(','), ...rows].join('\n');
+                }
+
+                const csvContent = arrayToCSV(data);
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                today = dd + '-' + mm + '-' + yyyy;
+
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', "Geräte "+today+".csv");
+
+                document.body.appendChild(link);
+                link.click();
+
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    fetchData()
+}
