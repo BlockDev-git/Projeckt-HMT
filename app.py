@@ -163,7 +163,7 @@ def task():
     connection = sqlite3.connect("Database.db")
     corsor = connection.cursor()
 
-    for row in corsor.execute("SELECT * FROM connections WHERE created_at < DATETIME('now', 'localtime', '-8 hours')"):
+    for row in corsor.execute("SELECT * FROM connections WHERE created_at <= DATETIME('now', 'localtime', '-8 hours')"):
 
         corsor.execute("delete from connections where id=:id", {"id": row[0]})
         corsor.execute("INSERT INTO log (ip, object, action, details) VALUES (?, ?, ?, ?)", ["", "", "Abmeldung", "Admin Benutzer ist nun abgemeldet"])
